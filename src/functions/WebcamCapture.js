@@ -48,11 +48,11 @@ const WebcamCapture = () => {
 
             canvas.toBlob(blob => {
                 const formData = new FormData();
-                formData.append('capturedImg', blob, 'captured_face.png');
+                formData.append('file', blob, 'captured_face.png');
 
-                axios.post('http://localhost:8080/face-capture', formData)
+                axios.post('http://127.0.0.1:8000/generation', formData)
                     .then(response => {
-                        // Handle response from server if needed
+                        console.log(response.data);
                     })
                     .catch(error => {
                         console.error('Error uploading image:', error);
