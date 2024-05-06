@@ -8,10 +8,17 @@ const SpeechToText = () => {
     const [audioUrl, setAudioUrl] = useState('');
 
     useEffect(() => {
-        // audioUrl이 변경될 때마다 새로운 오디오 객체 생성 및 재생
         if (audioUrl) {
             const audio = new Audio(audioUrl);
             audio.play();
+
+            return () => {
+                audio.pause();
+            };
+        }
+        else {
+            const audio = new Audio();
+            audio.pause();
         }
     }, [audioUrl]);
 
@@ -26,6 +33,7 @@ const SpeechToText = () => {
             sendUserScript();
 
         } else {
+            setAudioUrl('');
             SpeechRecognition.startListening({ language: 'ko-KR', continuous: true });
         }
     }
@@ -53,14 +61,19 @@ const SpeechToText = () => {
 
     return (
         <>
-            <textarea className="transcript" id="userScript" value={transcript} onChange={() => {}}/>
+            {/* 실시간으로 stt된 사용자 음성 텍스트 */}
+            <textarea className="transcript" id="userScript" value={transcript} onChange={() => {}} />
+
+            {/* 음성인식 시작/중지 버튼 */}
             <button onClick={toggleListening}>
                 {listening ? '음성인식 중지' : '음성인식 시작'}
-
             </button>
+
+            {/* gpt 응답 텍스트, gpt 응답 오디오는 api 요청 성공 시 바로 재생 */}
             <p id="gptScript">{gptScript}</p>
         </>
     );
+
 };
 
 export default SpeechToText;
