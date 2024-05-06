@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import axios from "axios";
+import uuid from 'react-uuid'
+
 const WebcamCapture = () => {
     const videoRef = useRef();
     const canvasRef = useRef();
@@ -48,16 +50,17 @@ const WebcamCapture = () => {
 
             canvas.toBlob(blob => {
                 const formData = new FormData();
-                formData.append('file', blob, 'captured_face.png');
+                const fileName = `captured_face_${uuid()}.jpg`
+                formData.append('image_file', blob, fileName);
 
-                axios.post('http://127.0.0.1:8000/generation', formData)
+                axios.post('http://localhost:8000/fast/api/face-recognition', formData)
                     .then(response => {
                         console.log(response.data);
                     })
                     .catch(error => {
                         console.error('Error uploading image:', error);
                     });
-            }, 'image/png');
+            }, 'image/jpeg');
         }
     };
 
