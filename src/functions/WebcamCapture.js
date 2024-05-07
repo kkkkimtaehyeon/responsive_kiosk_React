@@ -1,10 +1,25 @@
 import React, { useRef, useEffect } from 'react';
 import axios from "axios";
 import uuid from 'react-uuid'
+import {useNavigate} from "react-router-dom";
 
 const WebcamCapture = () => {
     const videoRef = useRef();
     const canvasRef = useRef();
+    const navigate = useNavigate();
+
+    //should be fixed
+    const navigateHandler = (generation) => {
+        if(generation === "young") {
+            navigate("/usingai");
+        }
+        else if(generation === "middle"){
+            navigate("/usingai");
+        }
+        else {
+            navigate("/usingai");
+        }
+    }
 
     useEffect(() => {
         const enableVideoStream = async () => {
@@ -21,7 +36,7 @@ const WebcamCapture = () => {
         enableVideoStream();
 
         return () => {
-            if (videoRef.current.srcObject) {
+            if (videoRef.current && videoRef.current.srcObject) {
                 const stream = videoRef.current.srcObject;
                 const tracks = stream.getTracks();
 
@@ -30,9 +45,10 @@ const WebcamCapture = () => {
                 });
             }
         };
+
     }, []);
 
-    const takeSnapshotAndSendToServer = async () => {
+    const takeSnapshot= async () => {
         if (videoRef.current && canvasRef.current) {
             const video = videoRef.current;
             const canvas = canvasRef.current;
@@ -49,28 +65,34 @@ const WebcamCapture = () => {
             context.drawImage(video, 0, 0, canvasRef.current.width, canvasRef.current.height);
 
             canvas.toBlob(blob => {
-                const formData = new FormData();
-                const fileName = `captured_face_${uuid()}.jpg`
-                formData.append('image_file', blob, fileName);
-
-                axios.post('http://localhost:8000/fast/api/face-recognition', formData)
-                    .then(response => {
-                        console.log(response.data);
-                    })
-                    .catch(error => {
-                        console.error('Error uploading image:', error);
-                    });
+                sendSnapShotToServer(blob);
             }, 'image/jpeg');
         }
     };
+
+    const sendSnapShotToServer = (blob) => {
+        const formData = new FormData();
+        const fileName = `captured_face_${uuid()}.jpg`
+        formData.append('image_file', blob, fileName);
+
+        axios.post('http://localhost:8000/fast/api/face-recognition', formData)
+            .then(response => {
+                console.log(response.data);
+                navigateHandler(response.data.generation);
+            })
+            .catch(error => {
+                console.error('Error uploading image:', error);
+            });
+
+    }
 
 
 
     return (
         <div>
             <video ref={videoRef} autoPlay={true} />
-            <button onClick={takeSnapshotAndSendToServer}>매장</button>
-            <button onClick={takeSnapshotAndSendToServer}>포장</button>
+            <button onClick={takeSnapshot}>매장</button>
+            <button onClick={takeSnapshot}>포장</button>
             <canvas ref={canvasRef} style={{ display: 'none' }} />
         </div>
     );
