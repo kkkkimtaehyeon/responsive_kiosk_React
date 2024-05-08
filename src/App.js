@@ -13,6 +13,9 @@ import UsingAI from "./pages/UsingAI";
 import Purchase from "./pages/Purchase";
 import NotFoundPage from "./pages/NotFoundPage";
 import MainLayout from "./layouts";
+import SearchComponent from "./pages/AI_search/SearchComponent";
+import OrderComponent from "./pages/AI_search/OrderComponent";
+import MiddleOrder from "./pages/AI_search/MiddleOrder";
 
 function App() {
     const router = createBrowserRouter([
@@ -24,14 +27,26 @@ function App() {
                     path: "/",
                     element: <Home />,
                 },
+                {
+                    path: "search",
+                    element: <SearchComponent />
+                },
+                {
+                    path: "search-order",
+                    element: <OrderComponent />
+                },
+                {
+                    path: "middle-order",
+                    element: <MiddleOrder />
+                },
                 // {
                 //     path: "olderorder",
                 //     element: <OlderOrder />,
                 // },
-                // {
-                //     path: "youngerorder",
-                //     element: <YoungerOrder />,
-                // },
+                {
+                    path: "youngerorder",
+                    element: <YoungerOrder />,
+                },
                 {
                     path: "usingai",
                     element: <UsingAI />,
