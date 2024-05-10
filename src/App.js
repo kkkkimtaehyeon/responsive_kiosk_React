@@ -1,21 +1,13 @@
 import './App.css';
-import WebcamCapture from "./functions/WebcamCapture";
-import SpeechToText from "./functions/SpeechToText";
 
-import {
-    createBrowserRouter,
-    RouterProvider,
-} from "react-router-dom";
+import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import Home from "./pages/Home";
 import YoungerOrder from "./pages/YoungerOrder";
-import OlderOrder from "./pages/OlderOrder";
 import UsingAI from "./pages/UsingAI";
-import Purchase from "./pages/Purchase";
 import NotFoundPage from "./pages/NotFoundPage";
 import MainLayout from "./layouts";
-import SearchComponent from "./pages/AI_search/SearchComponent";
-import OrderComponent from "./pages/AI_search/OrderComponent";
-import MiddleOrder from "./pages/AI_search/MiddleOrder";
+import Search from "./pages/AI_search/Search";
+import SearchOrder from "./pages/AI_search/SearchOrder";
 
 function App() {
     const router = createBrowserRouter([
@@ -29,15 +21,11 @@ function App() {
                 },
                 {
                     path: "search",
-                    element: <SearchComponent />
+                    element: <Search />
                 },
                 {
                     path: "search-order",
-                    element: <OrderComponent />
-                },
-                {
-                    path: "middle-order",
-                    element: <MiddleOrder />
+                    element: <SearchOrder />
                 },
                 // {
                 //     path: "olderorder",

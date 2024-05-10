@@ -3,31 +3,27 @@ import '../YoungerOrder.css'
 import { Row, Col } from 'react-bootstrap'
 import Card from 'react-bootstrap/Card';
 import Pic from '../../swallow.jpg';
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import AddModal from '../../components/addModal'
 
-const YoungerOrder = () => {
+const SearchOrder = () => {
     const navigate = useNavigate();
-    const dataList = [
-        {
-            id: 1,
-            name: '아메리카노',
-            price: 3000
-        },
-        {
-            id: 2,
-            name: '카페라떼',
-            price: 3500
-        },
-        {
-            id: 3,
-            name: '바닐라라떼',
-            price: 3700
-        }
-    ]
+    const { state } = useLocation();
+    const { menus } = state;
+    const convertJsonArrayToObjectArray = (menus) => {
+        const objectArray = menus.map(item => {
+            return {
+                id: item.id,
+                name: item.name,
+                price: item.price
+            };
+        });
+        return objectArray;
+    }
+    const dataList = convertJsonArrayToObjectArray(menus);
 
-    const [orderList, setOrderList] = useState([])
-    const [totalPrice, setTotalPrice] = useState(0)
+    const [orderList, setOrderList] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
 
     const handleConfirm = () => {
         navigate("/purchase");
@@ -141,4 +137,4 @@ const YoungerOrder = () => {
     );
 };
 
-export default YoungerOrder;
+export default SearchOrder;
