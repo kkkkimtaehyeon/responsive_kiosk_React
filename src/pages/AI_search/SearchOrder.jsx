@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import '../YoungerOrder.css'
-import { Row, Col } from 'react-bootstrap'
+ import {Row, Col, CardBody} from 'react-bootstrap'
 import Card from 'react-bootstrap/Card';
 import Pic from '../../swallow.jpg';
 import {useLocation, useNavigate} from "react-router-dom";
 import AddModal from '../../components/addModal'
+import Button from "react-bootstrap/Button";
 
 const SearchOrder = () => {
     const navigate = useNavigate();
@@ -63,16 +63,23 @@ const SearchOrder = () => {
         return count
     }
 
+    const backToSearch = () => {
+        navigate("/search");
+    }
+
     return (
         <div className='container'>
             <div className='youngerorder-container'>
+                <div className="d-grid gap-2">
+                    <button className="btn btn-info rounded-4" type="button" onClick={backToSearch}><h3>다시 검색</h3></button>
+                </div>
                 <Row style={{height: '100%', width: '100%'}}>
-                    <Col md={6} className='youngerorder-middle'>
+                    <Col md={8} className='youngerorder-middle'>
                         <Row>
-                            {dataList.map((data) => {
+                        {dataList.map((data) => {
                                 return (
                                     <Col md={3} key={data.id} style={{margin: '5px 0'}}>
-                                        <Card onClick={() => handleOpen(data)}>
+                                        <Card className="rounded-4 shadow-sm border-0" onClick={() => handleOpen(data)}>
                                             <Card.Img variant="top" src={Pic}/>
                                             <Card.Body>
                                                 <Card.Title>{data.name}</Card.Title>
@@ -88,8 +95,8 @@ const SearchOrder = () => {
                     <Col md={4}>
                         {/*주문 목록*/}
                         <div className='youngerorder-detail gap-3'>
-                            <div className='card rounded-4 shadow-sm border-0'>
-                                <div className='card-body'>
+                            <Card className='rounded-4 shadow-sm border-0'>
+                                <CardBody>
                                     <span><h3>주문 목록</h3></span>
                                     {orderList.map((order) => {
                                             return (
@@ -101,11 +108,11 @@ const SearchOrder = () => {
                                             )
                                         }
                                     )}
-                                </div>
-                            </div>
+                                </CardBody>
+                            </Card>
                             {/*주문 통계*/}
-                            <div className='card rounded-4 shadow-sm border-0 gap-2'>
-                                <div className='card-body'>
+                            <Card className='rounded-4 shadow-sm border-0 gap-2'>
+                                <CardBody>
                                     <Row>
                                         <Col md={6}><h3>주문 개수</h3></Col>
                                         <Col md={6}><h5>{getOrderCount()} 개</h5></Col>
@@ -114,12 +121,12 @@ const SearchOrder = () => {
                                         <Col md={6}><h3>결제 금액</h3></Col>
                                         <Col md={6}><h5>{totalPrice}￦</h5></Col>
                                     </Row>
-                                </div>
-                            </div>
+                                </CardBody>
+                            </Card>
                             {/*주문 진행*/}
-                            <div className='youngerorder-detail-bottom'>
-                                <div className='btn btn-primary' onClick={handleConfirm}><h3>주문 확정</h3></div>
-                                <div className='btn btn-danger' onClick={handleClear}><h3>주문 취소</h3></div>
+                            <div className="d-grid gap-2">
+                                <Button className='btn-primary rounded-4' onClick={handleConfirm}><h3>주문 확정</h3></Button>
+                                <Button className='btn-danger rounded-4' onClick={handleClear}><h3>주문 취소</h3></Button>
                             </div>
 
                         </div>
