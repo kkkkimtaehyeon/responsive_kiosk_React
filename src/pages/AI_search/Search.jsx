@@ -1,6 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import {CardBody, Container, Row} from "react-bootstrap";
 
 const Search = () => {
     const navigate = useNavigate();
@@ -9,6 +12,9 @@ const Search = () => {
     const [clickedIngredients, setClickedIngredients] = useState([]);
     const [clickedIngredientBlocks, setClickedIngredientBlocks] = useState([]);
 
+    // useEffect(() => {
+    //     console.log("Clicked Ingredients:", clickedIngredients);
+    // }, [clickedIngredients]);
 
     useEffect(() => {
         const ingredientsElements = ingredients.map((ingredient) => (
@@ -22,7 +28,7 @@ const Search = () => {
     useEffect(() => {
         const clickedIngredientElements = clickedIngredients.map((clickedIngredient) => (
             <div className="card bg-primary-subtle border-0 rounded-4 col-md-auto" onClick={() => toggleIngredient(clickedIngredient)}>
-                <div className="card-body">{clickedIngredient}</div>
+                <div className="card-body"><strong>{clickedIngredient}</strong></div>
             </div>
         ))
         setClickedIngredientBlocks(clickedIngredientElements);
@@ -41,10 +47,11 @@ const Search = () => {
             setClickedIngredients(prevClickedIngredients => [...prevClickedIngredients, ingredient]);
             setIngredients(prevIngredients => prevIngredients.filter(item => item !== ingredient));
         }
+
     };
 
     const goSearch = () => {
-        //const data = JSON.stringify(clickedIngredients);
+        // 클릭된 재료 없을 때 검색 안되게
         const data2 = {
             "ingredients": clickedIngredients
         }
@@ -60,47 +67,43 @@ const Search = () => {
             .catch(error => {
                 console.log(error);
             })
-
     }
 
 
 
 
     return (
-        <div className="container">
-
-            <div id="search">
-
-                <div className="row text-center">
+        <Container>
+            <Container id="search">
+                <Row className="text-center">
                     <h1>원하시는 재료를 조합해 검색해보세요!</h1>
-                </div>
+                </Row>
 
                 {/* 검색어 생성 */}
-                <div className="card row rounded-4 bg-light border-0">
-                    <div className="card-body row column-gap-2 justify-content-center">
+                <Card className="row rounded-4 rounded-bottom-0 bg-light border-0">
+                    <CardBody className="row column-gap-2 justify-content-center">
                         {/* 클릭된 재료 블룩 */}
                         {clickedIngredientBlocks}
-                        <div className="card border-0 rounded-4 col-md-auto">
-                            <div className="card-body" onClick={goSearch}>가 들어간 메뉴를 검색</div>
-                        </div>
-                    </div>
-                </div>
+                        <Card className="border-0 rounded-4 col-md-auto">
+                            <CardBody onClick={goSearch}>가 들어간 메뉴를 검색</CardBody>
+                        </Card>
+                    </CardBody>
+                </Card>
 
                 {/* 검색에 추가할 재료 선택 */}
-                <div className="card row rounded-4 bg-light">
-                    <div className="card-body overflow-auto row justify-content-center">
+                <Card className="row rounded-4 rounded-top-0 bg-dark-subtle border-0">
+                    <CardBody className="overflow-auto row justify-content-center">
                         <div className="d-flex flex-nowrap column-gap-2">
                             {/* 재료 블록 */}
                             {ingredientBlocks}
                         </div>
-                    </div>
-                </div>
-
-            </div>
-
+                    </CardBody>
+                </Card>
+            </Container>
 
 
-        </div>
+
+        </Container>
     );
 };
 
