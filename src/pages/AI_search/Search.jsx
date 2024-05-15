@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import {CardBody, Container, Row} from "react-bootstrap";
+import {CardBody, Col, Container, Row} from "react-bootstrap";
 
 const Search = () => {
     const navigate = useNavigate();
@@ -47,7 +47,6 @@ const Search = () => {
             setClickedIngredients(prevClickedIngredients => [...prevClickedIngredients, ingredient]);
             setIngredients(prevIngredients => prevIngredients.filter(item => item !== ingredient));
         }
-
     };
 
     const goSearch = () => {
@@ -59,6 +58,7 @@ const Search = () => {
             .then(response => {
                 console.log(response);
                 ///OrderComponent에 데이터와 함께 이동
+
                 navigate("/search-order",{
                     state: {menus: response.data}
                 });
@@ -75,30 +75,35 @@ const Search = () => {
     return (
         <Container>
             <Container id="search">
-                <Row className="text-center">
-                    <h1>원하시는 재료를 조합해 검색해보세요!</h1>
-                </Row>
+                <Col className="text-center">
+                    <Row className="text-center">
+                        <Button>키워드에 해당되는 메뉴 검색</Button>
+                    </Row>
 
-                {/* 검색어 생성 */}
-                <Card className="row rounded-4 rounded-bottom-0 bg-light border-0">
-                    <CardBody className="row column-gap-2 justify-content-center">
-                        {/* 클릭된 재료 블룩 */}
-                        {clickedIngredientBlocks}
-                        <Card className="border-0 rounded-4 col-md-auto">
-                            <CardBody onClick={goSearch}>가 들어간 메뉴를 검색</CardBody>
-                        </Card>
-                    </CardBody>
-                </Card>
 
-                {/* 검색에 추가할 재료 선택 */}
-                <Card className="row rounded-4 rounded-top-0 bg-dark-subtle border-0">
-                    <CardBody className="overflow-auto row justify-content-center">
-                        <div className="d-flex flex-nowrap column-gap-2">
-                            {/* 재료 블록 */}
-                            {ingredientBlocks}
-                        </div>
-                    </CardBody>
-                </Card>
+                    {/* 검색어 생성 */}
+                    <Card className="row rounded-5 bg-light-subtle border-0 shadow-sm">
+                        <CardBody className="row column-gap-2 justify-content-center">
+                            {/* 클릭된 재료 블룩 */}
+                            {clickedIngredientBlocks}
+                            <Card className="border-0 rounded-4 col-md-auto">
+                                <CardBody onClick={goSearch}>가 들어간 메뉴를 검색</CardBody>
+                            </Card>
+                        </CardBody>
+                    </Card>
+
+                    {/* 검색에 추가할 재료 선택 */}
+                    <Card className="row rounded-5 bg-light-subtle border-0 shadow-sm">
+                        <CardBody className="overflow-auto row justify-content-center">
+                            <div className="d-flex flex-nowrap column-gap-2">
+                                {/* 재료 블록 */}
+                                {ingredientBlocks}
+                            </div>
+                        </CardBody>
+                    </Card>
+
+                </Col>
+
             </Container>
 
 
