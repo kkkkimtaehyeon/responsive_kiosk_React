@@ -1,29 +1,55 @@
-import React, { useState } from 'react';
- import {Row, Col, CardBody} from 'react-bootstrap'
-import Card from 'react-bootstrap/Card';
-import Pic from '../../swallow.jpg';
+import React, {useEffect, useState} from 'react';
+import {Button, Card, CardBody, Col, Row} from 'react-bootstrap'
 import {useLocation, useNavigate} from "react-router-dom";
 import AddModal from '../../components/addModal'
-import Button from "react-bootstrap/Button";
+import axios from "axios";
+import OrderList from "./components/OrderList";
+import OrderStats from "./components/OrderStats";
 
 const SearchOrder = () => {
     const navigate = useNavigate();
+    const [orderList, setOrderList] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [currentOrder, setCurrentOrder] = useState({});
+    const [modalShow, setModalShow] = useState(false);
+
     const { state } = useLocation();
     const { menus } = state;
-    const convertJsonArrayToObjectArray = (menus) => {
-        const objectArray = menus.map(item => {
+    const [dataList, setDataList] = useState([]);
+
+    useEffect(() => {
+        if (menus) {
+            const fetchData = async () => {
+                const menuList = menus.MenuList;
+                const queryParams = menuList.map(menu => `id=${menu.id}`).join('&');
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/menus?${queryParams}`);
+                    setDataList(convertJsonArrayToObjectArray(response.data));
+                } catch (error) {
+                    console.error('no menus contain those ingredients error : ', error);
+                }
+            };
+            fetchData();
+        }
+
+    }, [menus]);
+
+
+
+    const convertJsonArrayToObjectArray = (menuDetails) => {
+        return menuDetails.map(item => {
             return {
                 id: item.id,
                 name: item.name,
-                price: item.price
+                price: item.price,
+                imagePath: item.imagePath
             };
         });
-        return objectArray;
     }
-    const dataList = convertJsonArrayToObjectArray(menus);
 
-    const [orderList, setOrderList] = useState([]);
-    const [totalPrice, setTotalPrice] = useState(0);
+
+
+
 
     const handleConfirm = () => {
         navigate("/purchase");
@@ -34,14 +60,14 @@ const SearchOrder = () => {
         setTotalPrice(0)
     }
 
-    const [currentOrder, setCurrentOrder] = useState({})
+
 
     const handleOpen = (data) => {
         setCurrentOrder(data)
         setModalShow(true)
     }
 
-    const [modalShow, setModalShow] = useState(false);
+
     const handleAdd = (data) => {
         const idx = orderList.findIndex((order) => order.id === data.id)
         if (idx !== -1) {
@@ -80,7 +106,7 @@ const SearchOrder = () => {
                                 return (
                                     <Col md={3} key={data.id} style={{margin: '5px 0'}}>
                                         <Card className="rounded-4 shadow-sm border-0" onClick={() => handleOpen(data)}>
-                                            <Card.Img variant="top" src={Pic}/>
+                                            <Card.Img variant="top" src={data.imagePath}/>
                                             <Card.Body>
                                                 <Card.Title>{data.name}</Card.Title>
                                                 <Card.Text>
@@ -93,36 +119,15 @@ const SearchOrder = () => {
                         </Row>
                     </Col>
                     <Col md={4}>
-                        {/*주문 목록*/}
+
                         <div className='youngerorder-detail gap-3'>
-                            <Card className='rounded-4 shadow-sm border-0'>
-                                <CardBody>
-                                    <span><h3>주문 목록</h3></span>
-                                    {orderList.map((order) => {
-                                            return (
-                                                <Row key={order.id}>
-                                                    <Col md={5}><h5>{order.name}</h5></Col>
-                                                    <Col md={3}><h5>{order.count}</h5></Col>
-                                                    <Col md={4}><h5>{order.price * order.count}￦</h5></Col>
-                                                </Row>
-                                            )
-                                        }
-                                    )}
-                                </CardBody>
-                            </Card>
+
+                            {/*주문 목록*/}
+                            <OrderList orderList = {orderList} />
+
                             {/*주문 통계*/}
-                            <Card className='rounded-4 shadow-sm border-0 gap-2'>
-                                <CardBody>
-                                    <Row>
-                                        <Col md={6}><h3>주문 개수</h3></Col>
-                                        <Col md={6}><h5>{getOrderCount()} 개</h5></Col>
-                                    </Row>
-                                    <Row>
-                                        <Col md={6}><h3>결제 금액</h3></Col>
-                                        <Col md={6}><h5>{totalPrice}￦</h5></Col>
-                                    </Row>
-                                </CardBody>
-                            </Card>
+                            <OrderStats getOrderCount = {getOrderCount} totalPrice = {totalPrice} />
+
                             {/*주문 진행*/}
                             <div className="d-grid gap-2">
                                 <Button className='btn-primary rounded-4' onClick={handleConfirm}><h3>주문 확정</h3></Button>
