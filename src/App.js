@@ -8,6 +8,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import MainLayout from "./layouts";
 import Search from "./pages/AI_search/Search";
 import SearchOrder from "./pages/AI_search/SearchOrder";
+import SearchV2 from "./pages/AI_search/Search_ver2";
 
 function App() {
     const router = createBrowserRouter([
@@ -21,7 +22,7 @@ function App() {
                 },
                 {
                     path: "search",
-                    element: <Search />
+                    element: <SearchV2 />
                 },
                 {
                     path: "search-order",
