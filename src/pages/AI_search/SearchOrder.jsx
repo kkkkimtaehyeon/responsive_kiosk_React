@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Card, CardBody, Col, Row} from 'react-bootstrap'
-import {useLocation, useNavigate} from "react-router-dom";
+import React, {useState} from 'react';
+import {Button, Col, Row} from 'react-bootstrap'
+import {useNavigate} from "react-router-dom";
 import AddModal from '../../components/addModal'
-import axios from "axios";
 import OrderList from "./components/OrderList";
 import OrderStats from "./components/OrderStats";
+import SearchV2 from "./Search_ver2";
 
 const SearchOrder = () => {
     const navigate = useNavigate();
@@ -12,44 +12,6 @@ const SearchOrder = () => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [currentOrder, setCurrentOrder] = useState({});
     const [modalShow, setModalShow] = useState(false);
-
-    const { state } = useLocation();
-    const { menus } = state;
-    const [dataList, setDataList] = useState([]);
-
-    useEffect(() => {
-        if (menus) {
-            const fetchData = async () => {
-                const menuList = menus.MenuList;
-                const queryParams = menuList.map(menu => `id=${menu.id}`).join('&');
-                try {
-                    const response = await axios.get(`http://localhost:8080/api/menus?${queryParams}`);
-                    setDataList(convertJsonArrayToObjectArray(response.data));
-                } catch (error) {
-                    console.error('no menus contain those ingredients error : ', error);
-                }
-            };
-            fetchData();
-        }
-
-    }, [menus]);
-
-
-
-    const convertJsonArrayToObjectArray = (menuDetails) => {
-        return menuDetails.map(item => {
-            return {
-                id: item.id,
-                name: item.name,
-                price: item.price,
-                imagePath: item.imagePath
-            };
-        });
-    }
-
-
-
-
 
     const handleConfirm = () => {
         navigate("/purchase");
@@ -89,33 +51,14 @@ const SearchOrder = () => {
         return count
     }
 
-    const backToSearch = () => {
-        navigate("/search");
-    }
-
     return (
         <div className='container'>
             <div className='youngerorder-container'>
-                <div className="d-grid gap-2">
-                    <button className="btn btn-info rounded-4" type="button" onClick={backToSearch}><h3>다시 검색</h3></button>
-                </div>
+
                 <Row style={{height: '100%', width: '100%'}}>
                     <Col md={8} className='youngerorder-middle'>
                         <Row>
-                        {dataList.map((data) => {
-                                return (
-                                    <Col md={3} key={data.id} style={{margin: '5px 0'}}>
-                                        <Card className="rounded-4 shadow-sm border-0" onClick={() => handleOpen(data)}>
-                                            <Card.Img variant="top" src={data.imagePath}/>
-                                            <Card.Body>
-                                                <Card.Title>{data.name}</Card.Title>
-                                                <Card.Text>
-                                                    <span style={{color: 'red'}}>{data.price}￦</span>
-                                                </Card.Text>
-                                            </Card.Body>
-                                        </Card>
-                                    </Col>)
-                            })}
+                            <SearchV2 handleOpen={handleOpen} />
                         </Row>
                     </Col>
                     <Col md={4}>

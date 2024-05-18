@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
-import {CardBody, Col, Container, Row, Button, Card} from "react-bootstrap";
+import {CardBody, Col, Container, Row} from "react-bootstrap";
+import SearchedMenuList from "./components/SearchedMenuList";
 
-const SearchV2 = () => {
-    const navigate = useNavigate();
+const SearchV2 = ({handleOpen}) => {
     const [ingredients, setIngredients] = useState(['주스', '커피', '우유', '차', '당도', '과일', '초콜릿']);
     const [ingredientBlocks, setIngredientBlocks] = useState(ingredients);
     const [clickedIngredients, setClickedIngredients] = useState([]);
     const [isEmpty, setIsEmpty] = useState(true);
+    const [menus, setMenus] = useState();
+    const [visibilityToggle, setVisibilityToggle ] = useState(true);
 
     useEffect(() => {
         clickedIngredients.length === 0 ? setIsEmpty(true) : setIsEmpty(false);
@@ -41,7 +42,6 @@ const SearchV2 = () => {
 
 
     const goSearch = () => {
-        // 클릭된 재료 없을 때 검색 안되게 추가
         if(!isEmpty) {
             const data = {
                 "ingredients": clickedIngredients
@@ -49,45 +49,65 @@ const SearchV2 = () => {
             axios.post('http://localhost:8000/fast/api/search', data)
                 .then(response => {
                     console.log('recommendation menus are successfully arrived! : ', response.data);
-                    navigate("/search-order",{
-                        state: {menus: response.data}
-                    });
+                    visibilityHandler();
+                    setMenus(response.data);
+
 
                 })
                 .catch(error => {
                     console.log(error);
                 })
         }
-
     }
 
+    const reset = () => {
+        setClickedIngredients([]);
+        setMenus([]);
+        visibilityHandler();
+    }
 
-
+    const visibilityHandler = () => {
+        setVisibilityToggle(!visibilityToggle);
+    }
 
     return (
         <Container id="search">
 
             <Col className="text-center">
 
-                {/* 검색에 추가할 재료 선택 */}
-                <Card className="row rounded-5 rounded-bottom-0 bg-light border-0 shadow-sm">
-                    <CardBody className="overflow-auto row justify-content-center">
-                        <div className="d-flex flex-nowrap column-gap-3">
-                            {/* 재료 블록 */}
-                            {ingredientBlocks}
-                        </div>
-                    </CardBody>
-                </Card>
+                {visibilityToggle &&
+                    <Row>
+                        {/* 검색에 추가할 재료 선택 */}
+                        <Row className="card rounded-5 rounded-bottom-0 bg-light border-0 shadow-sm">
+                            <CardBody className="overflow-auto row justify-content-center">
+                                <div className="d-flex flex-nowrap column-gap-3">
+                                    {/* 재료 블록 */}
+                                    {ingredientBlocks}
+                                </div>
+                            </CardBody>
+                        </Row>
 
-                <Card className="row rounded-5 rounded-top-0 bg-info-subtle border-0 shadow-sm" onClick={goSearch}>
-                    <CardBody className="overflow-auto row justify-content-center">
-                        <h3>선택한 재료가 포함되는 모든 메뉴 검색</h3>
-                    </CardBody>
-                </Card>
+                        <Row className="card rounded-5 rounded-top-0 bg-info-subtle border-0 shadow-sm" onClick={goSearch}>
+                            <CardBody className="overflow-auto row justify-content-center">
+                                <h3>선택한 재료가 포함되는 모든 메뉴 검색</h3>
+                            </CardBody>
+                        </Row>
+
+                    </Row>
+                }
+
+
+                {!visibilityToggle &&
+                    <Row>
+                        <button className="btn btn-info rounded-4" type="button" onClick={reset}><h3>다시 검색</h3></button>
+                        <SearchedMenuList menus={menus} handleOpen={handleOpen}/>
+                    </Row>
+                }
+
+
             </Col>
 
         </Container>
-
     );
 };
 
