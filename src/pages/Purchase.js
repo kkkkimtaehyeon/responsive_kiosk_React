@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './Purchase.css'
 import { useNavigate } from "react-router-dom";
 import { Row, Col } from 'react-bootstrap'
-
+import purchaseImg from '../images/purchaseImg.png'
+import completeImg from '../images/completeImg.png'
 const Purchase = () => {
     const [status, setStatus] = useState(0) // 0 purchase 1 complete
     const navigate = useNavigate();

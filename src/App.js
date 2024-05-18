@@ -9,6 +9,7 @@ import MainLayout from "./layouts";
 import Search from "./pages/AI_search/Search";
 import SearchOrder from "./pages/AI_search/SearchOrder";
 import SearchV2 from "./pages/AI_search/Search_ver2";
+import Purchase from "./pages/Purchase";
 
 function App() {
     const router = createBrowserRouter([
@@ -23,6 +24,10 @@ function App() {
                 {
                     path: "search",
                     element: <SearchV2 />
+                },
+                {
+                    path: "search-test",
+                    element: <Search />
                 },
                 {
                     path: "search-order",
@@ -40,10 +45,10 @@ function App() {
                     path: "usingai",
                     element: <UsingAI />,
                 },
-                // {
-                //     path: "purchase",
-                //     element: <Purchase />,
-                // },
+                {
+                    path: "purchase",
+                    element: <Purchase />,
+                },
             ],
         },
         {
