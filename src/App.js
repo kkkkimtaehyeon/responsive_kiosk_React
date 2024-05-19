@@ -10,6 +10,8 @@ import Search from "./pages/AI_search/Search";
 import SearchOrder from "./pages/AI_search/SearchOrder";
 import SearchV2 from "./pages/AI_search/Search_ver2";
 import Purchase from "./pages/Purchase";
+import Payment from "./pages/AI_search/Payment";
+import OrderComplete from "./pages/AI_search/OrderComplete";
 
 function App() {
     const router = createBrowserRouter([
@@ -24,10 +26,6 @@ function App() {
                 {
                     path: "search",
                     element: <SearchV2 />
-                },
-                {
-                    path: "search-test",
-                    element: <Search />
                 },
                 {
                     path: "search-order",
@@ -49,6 +47,14 @@ function App() {
                     path: "purchase",
                     element: <Purchase />,
                 },
+                {
+                    path: "payment",
+                    element: <Payment />,
+                },
+                {
+                    path: "order-complete",
+                    element: <OrderComplete />,
+                }
             ],
         },
         {
