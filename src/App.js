@@ -12,6 +12,10 @@ import SearchV2 from "./pages/AI_search/Search_ver2";
 import Purchase from "./pages/Purchase";
 import Payment from "./pages/AI_search/Payment";
 import OrderComplete from "./pages/AI_search/OrderComplete";
+import WebSocketTest from "./pages/test/WebSocketTest";
+import WebSocketTest2 from "./pages/test/WebSocketTest2";
+import WebSocketTest3 from "./pages/test/WebSocketTest3";
+import AudioStreaming from "./pages/test/AudioStreaming";
 
 function App() {
     const router = createBrowserRouter([
@@ -54,6 +58,22 @@ function App() {
                 {
                     path: "order-complete",
                     element: <OrderComplete />,
+                },
+                {
+                    path: "test/websocket",
+                    element: <WebSocketTest />,
+                },
+                {
+                    path: "test/websocket/v2",
+                    element: <WebSocketTest2 />,
+                },
+                {
+                    path: "test/websocket/v3",
+                    element: <WebSocketTest3 />,
+                },
+                {
+                    path: "test/websocket/v4",
+                    element: <AudioStreaming />,
                 }
             ],
         },
