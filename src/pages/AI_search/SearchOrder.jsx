@@ -54,7 +54,7 @@ const SearchOrder = () => {
         setTakeoutModalShow(true);
     };
 
-    const getTotalOrder = (option) => {
+    const goToPay = (option) => {
         const orderData = {
             takeout: option,
             totalPrice: totalPrice,
@@ -100,7 +100,7 @@ const SearchOrder = () => {
                 <TakeoutModal
                     show={takeoutModalShow}
                     onHide={() => setTakeoutModalShow(false)}
-                    onConfirm={getTotalOrder}
+                    onConfirm={goToPay}
                 />
             </div>
         </div>
