@@ -4,8 +4,9 @@ import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognitio
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
 
-
 const WebSocketTest = () => {
+    const [text, setText] = useState('');
+    const [isStreaming, setIsStreaming] = useState(false);
     const wsRef = useRef(null);
     const audioContextRef = useRef(null);
     const audioQueueRef = useRef([]);
@@ -16,47 +17,31 @@ const WebSocketTest = () => {
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
     useEffect(() => {
-        connect();
         audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-
-        wsRef.current.onclose = () => {
-            console.log('웹소켓 연결 종료!');
-        };
-
-        wsRef.current.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-
         return () => {
             if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
                 wsRef.current.close();
+            }
+            if (audioContextRef.current) {
                 audioContextRef.current.close();
             }
         };
     }, []);
 
-    const connect = () => {
-        wsRef.current = new WebSocket('ws://localhost:8000/ws/v4/openai');
+    const startStreaming = () => {
+
+        wsRef.current = new WebSocket('ws://localhost:8000/websocket/v5/ws');
         wsRef.current.binaryType = 'arraybuffer';
 
         wsRef.current.onopen = () => {
-            console.log('웹소켓 연결 성공!');
+            console.log('Connected to the WebSocket server');
             audioQueueRef.current = [];
-
+            wsRef.current.send("안녕하세요 제 이름은 김태현입니다. 저는 조선대학교 4학년 학생입니다.");
         };
-
-    }
-
-    const startStreaming = () => {
-        if (!transcript) {
-            alert('Please enter some text to synthesize');
-            return;
-        }
-        wsRef.current.send(transcript);
 
         wsRef.current.onmessage = async (event) => {
             if (event.data instanceof ArrayBuffer) {
-                const arrayBuffer = event.data;
+                const arrayBuffer = await event.data;
                 try {
                     const audioContext = audioContextRef.current;
                     if (!audioContext) {
@@ -67,7 +52,7 @@ const WebSocketTest = () => {
                     audioQueueRef.current.push(audioBuffer);
 
                     if (!isPlayingRef.current) {
-                        playNextAudio();
+                        await playNextAudio();
                     }
                 } catch (error) {
                     console.error('Error decoding audio data:', error);
@@ -83,8 +68,15 @@ const WebSocketTest = () => {
             }
         };
 
+        wsRef.current.onclose = () => {
+            console.log('Disconnected from the WebSocket server');
+            setIsStreaming(false);
+        };
 
-
+        wsRef.current.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+        setIsStreaming(true);
     };
 
     const playNextAudio = () => {
@@ -110,6 +102,10 @@ const WebSocketTest = () => {
             console.log('No audio buffers to play');
         }
     };
+    
+    function send() {
+        startStreaming();
+    }
 
     const toggleListening = () => {
         if (listening) {
@@ -153,12 +149,8 @@ const WebSocketTest = () => {
                                 <p className="mb-1 text-muted">User</p>
                                 <p className="overflow-auto">{transcript}</p>
                             </div>
-                            <Button
-                                className={`ms-auto ${listening ? 'btn-danger' : 'btn-light'}`}
-                                style={{ height: '80px', flexShrink: 0 }}
-                                onClick={toggleListening}
-                            >
-                                {listening ? '음성인식 중지' : '음성인식 시작'}
+                            <Button onClick={send}>
+                                메세지 보내기
                             </Button>
                         </Card.Body>
                     </Card>

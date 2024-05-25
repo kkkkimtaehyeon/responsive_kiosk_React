@@ -15,6 +15,7 @@ import WebSocketTest2 from "./pages/test/WebSocketTest2";
 import WebSocketTest3 from "./pages/test/WebSocketTest3";
 import AudioStreaming from "./pages/test/AudioStreaming";
 import Tts from "./pages/test/Tts";
+import AudioStreaming2 from "./pages/test/AudioStreamingTest";
 
 function App() {
     const router = createBrowserRouter([
@@ -69,6 +70,10 @@ function App() {
         {
             path: "test/websocket/v4",
             element: <AudioStreaming />,
+        },
+        {
+            path: "test/websocket/v5",
+            element: <AudioStreaming2 />,
         },
         {
             path: "test/tts",
