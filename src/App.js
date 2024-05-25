@@ -1,90 +1,48 @@
-import './App.css';
-
-import {createBrowserRouter, RouterProvider,} from "react-router-dom";
+import React from "react";
+import MainLayout from "./layouts/index";
 import Home from "./pages/Home";
+import OlderOrder from "./pages/OlderOrder";
 import YoungerOrder from "./pages/YoungerOrder";
+import Purchase from "./pages/Purchase";
 import UsingAI from "./pages/UsingAI";
 import NotFoundPage from "./pages/NotFoundPage";
-import SearchOrder from "./pages/AI_search/SearchOrder";
-import SearchV2 from "./pages/AI_search/Search_ver2";
-import Purchase from "./pages/Purchase";
-import Payment from "./pages/AI_search/Payment";
-import OrderComplete from "./pages/AI_search/OrderComplete";
-import WebSocketTest from "./pages/test/WebSocketTest";
-import WebSocketTest2 from "./pages/test/WebSocketTest2";
-import WebSocketTest3 from "./pages/test/WebSocketTest3";
-import AudioStreaming from "./pages/test/AudioStreaming";
-import Tts from "./pages/test/Tts";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 function App() {
-    const router = createBrowserRouter([
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <MainLayout />,
+      children: [
         {
-            path: "/",
-            element: <Home />,
+          path: "/",
+          element: <Home />,
         },
         {
-            path: "search",
-            element: <SearchV2 />
+          path: "olderorder",
+          element: <OlderOrder />,
         },
         {
-            path: "search-order",
-            element: <SearchOrder />
-        },
-        // {
-        //     path: "olderorder",
-        //     element: <OlderOrder />,
-        // },
-        {
-            path: "youngerorder",
-            element: <YoungerOrder />,
+          path: "youngerorder",
+          element: <YoungerOrder />,
         },
         {
-            path: "usingai",
-            element: <UsingAI />,
+          path: "usingai",
+          element: <UsingAI />,
         },
         {
-            path: "purchase",
-            element: <Purchase />,
+          path: "purchase",
+          element: <Purchase />,
         },
-        {
-            path: "payment",
-            element: <Payment />,
-        },
-        {
-            path: "order-complete",
-            element: <OrderComplete />,
-        },
-        {
-            path: "test/websocket",
-            element: <WebSocketTest />,
-        },
-        {
-            path: "test/websocket/v2",
-            element: <WebSocketTest2 />,
-        },
-        {
-            path: "test/websocket/v3",
-            element: <WebSocketTest3 />,
-        },
-        {
-            path: "test/websocket/v4",
-            element: <AudioStreaming />,
-        },
-        {
-            path: "test/tts",
-            element: <Tts />,
-        },
-        {
-            path: "*",
-            element: <NotFoundPage />,
-        },
-    ]);
+      ],
+    },
+    {
+      path: "*",
+      element: <NotFoundPage />,
+    },
+  ]);
 
-    return (
-        <div>
-            <RouterProvider router={router} />
-        </div>
-    );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

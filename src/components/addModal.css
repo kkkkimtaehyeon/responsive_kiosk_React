@@ -1,0 +1,26 @@
+/* 首先，为Radio.Button设置一个自定义的class名 */
+.custom-radio-button {
+    /* 然后，在CSS中指定选中状态的样式 */
+    .ant-radio-button-checked {
+        background-color: #f50; /* 你想要的任何颜色 */
+        color: #fff; /* 文字颜色 */
+        border-color: #f50; /* 边框颜色 */
+        border-bottom-left-radius: 4px; /* 设置圆角的大小 */
+        border-top-left-radius: 4px; /* 设置圆角的大小 */
+
+    }
+
+}
+.truncate-title {
+    width: 4em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: ltr;
+}
+@media (min-width: 992px) {
+    .modal-lg {
+        width: 500px;
+    }
+}
+

@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import './OlderOrder.css'
 import { Row, Col } from 'react-bootstrap'
 import Card from 'react-bootstrap/Card';
+import Pic from '../assets/images/americano.jpg';
 import { useNavigate } from "react-router-dom";
-import AddModal from '../components/addModal'
+import AddModal from '../components/addModal';
 import Accordion from 'react-bootstrap/Accordion';
-import Pic from '../swallow.jpg'
 
 const OlderOrder = () => {
     const navigate = useNavigate();

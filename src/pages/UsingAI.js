@@ -1,172 +1,189 @@
-import React, {useEffect, useState} from 'react';
-import './UsingAI.css'
-import { Row, Col } from 'react-bootstrap'
-import { useNavigate } from "react-router-dom";
-import SpeechRecognition, {useSpeechRecognition} from "react-speech-recognition";
-import axios from "axios";
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const UsingAI = () => {
-    const navigate = useNavigate();
-    const handleConfirm = () => {
-        navigate("/purchase");
-    }
+function UsingAI() {
+  const [showModal, setShowModal] = useState(false);
+  const handleModalClose = () => setShowModal(false);
+  const handleModalShow = () => setShowModal(true);
 
-    const { transcript, listening, resetTranscript } = useSpeechRecognition();
-    const [gptScript, setGptScript] = useState();
-    const [audioUrl, setAudioUrl] = useState('');
-    const [gptCheckerResult, setGptCheckerResult] = useState(null);
-    const [recording, setRecording] = useState(null);
+  const styles = {
+    nanumGothicRegular: {
+      fontFamily: '"Nanum Gothic", sans-serif',
+      fontWeight: 400,
+      fontStyle: "normal",
+    },
+    customBtn: {
+      position: "absolute",
+      top: "10px",
+      right: "-3%",
+      transform: "translateX(-50%)",
+      padding: "15px 30px",
+      fontSize: "24px",
+    },
+    containerFluid: {
+      height: "10%",
+    },
+    navbarBrand: {
+      fontFamily: '"Nanum Gothic"',
+      fontSize: "xx-large",
+      fontWeight: "bold",
+    },
+    callStaff: {
+      fontSize: "xx-large",
+    },
+    aiQuestion: {
+      flex: 1,
+      marginBottom: 10,
+      //   position: "absolute",
+      //   width: "70%",
+      //   height: "70%",
+      //   top: "10%",
+    },
+    aiAnswer: {
+      fontSize: "28px",
+      color: "black",
+      textAlign: "left",
+    },
+    userAnswer: {
+      height: 212,
+      overflow: "auto",
+      //   position: "absolute",
+      textAlign: "left",
+      marginBottom: 0,
+      //   width: "70%",
+      //   height: "21%",
+      //   top: "79%",
+    },
+    orderList: {
+      //   position: "absolute",
+      //   width: "30%",
+      //   height: "60%",
+      //   left: "70%",
+      //   top: "10%",
+    },
+    orderPrice: {
+      position: "absolute",
+      bottom: 0,
+      left: 10,
+      right: 10,
+      //   width: "30%",
+      //   height: "10%",
+      //   left: "70%",
+      //   top: "73%",
+    },
+    orderPriceItem: {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+    btnWarning: {
+      //   position: "absolute",
+      //   left: "69.5%",
+      //   top: "84%",
+      //   width: "20%",
+      //   height: "15%",
+      fontSize: "xx-large",
+    },
+    btnOutlineSuccess: {
+      //   position: "absolute",
+      //   left: "89.5%",
+      //   top: "84%",
+      //   width: "10%",
+      //   height: "15%",
+      fontSize: "xx-large",
+    },
+  };
 
-    useEffect(() => {
-        if (gptScript) {
-            setGptCheckerResult(
-                <span style={{ fontSize: 32 }}>{gptScript}</span>
-            );
-        }
-    }, [gptScript]);
-
-
-    useEffect(() => {
-        if (audioUrl) {
-            const audio = new Audio(audioUrl);
-            audio.play();
-
-            return () => {
-                audio.pause();
-            };
-        }
-        else {
-            const audio = new Audio();
-            audio.pause();
-        }
-    }, [audioUrl]);
-
-    const audioHandler = (response) => {
-        setAudioUrl(response.data.gptAudioUrl);
-    }
-
-    const toggleListening = () => {
-        if (listening) {
-            setRecording(null);
-            SpeechRecognition.stopListening();
-            sendUserScript();
-
-        } else {
-            setAudioUrl('');
-            setRecording(<div className="spinner-grow text-danger-sm" role="status"/>);
-            SpeechRecognition.startListening({ language: 'ko-KR', continuous: true });
-        }
-    }
-
-
-
-    const sendUserScript = (finalTranscript) => {
-        const userScript = {
-            "userScript": document.getElementById('userScript').textContent// 수정된 부분
-        };
-        setGptCheckerResult(
-            <div className="d-flex justify-content-center">
-                <div className="spinner-grow text-primary" style={{ height: "10rem", width: "10rem" }} role="status"/>
-            </div>
-        );
-
-        axios.post('http://localhost:8000/fast/api/ai-order', userScript)
-            .then(response => {
-                console.log('suc', response.data);
-                resetTranscript(); //사용자 script를 reset
-                setGptScript(response.data.gpt_text_response); //응답 받은 gpt script를 설정해줌.
-                //audioHandler(response.data.gpt_audio_response); //응답 받은 gpt audio url를 재생.
-                const audioSrc = document.getElementById('audioSrc');
-                audioSrc.src = response.data.gpt_audio_response;
-                audioSrc.load();  // Load the new source
-                audioSrc.play();
-
-            })
-            .catch(error => {
-                console.log('err', error);
-            })
-
-    }
-
-
-    const handleClear = () => {
-    }
-    return (
-        <div className='usingai-container'>
-            <Row style={{height: '100%', width: '100%'}}>
-                <Col md={8} className='usingai-left'>
-                    <Row style={{height: '80%'}}>
-                        <span style={{fontSize: 48}}>AI</span>
-                        {/* gpt 답변 없으면 스피너 */}
-                        <div id={'gptChecker'}>{gptCheckerResult}</div>
-                    </Row>
-                    <Row style={{height: '20%', borderTop: '6px solid rgba(0, 0, 0, 1)'}}>
-                        <span style={{fontSize: 48}}>사용자<span>{recording}</span></span>{/* recording 빨간색으로 변경*/}
-
-                        <span id={'userScript'} style={{fontSize: 32}} onChange={() => {
-                        }}>{transcript}</span>
-                        <button onClick={toggleListening}>
-                            {listening ? '음성인식 중지' : '음성인식 시작'}
-                        </button>
-                    </Row>
-                </Col>
-                <Col md={4}>
-                    <div className='usingai-detail'>
-                        <div className='usingai-detail-top'>
-                            <span style={{fontSize: 36}}>주문 목록</span>
-                            <Row>
-                                <Col md={5} style={{fontSize: 32}}>아메리카노</Col>
-                                <Col md={3} style={{fontSize: 32}}>1</Col>
-                                <Col md={4} style={{fontSize: 32}}>3,000￦</Col>
-                            </Row>
-                            <Row>
-                                <Col md={5} style={{fontSize: 32}}>카페라떼</Col>
-                                <Col md={3} style={{fontSize: 32}}>2</Col>
-                                <Col md={4} style={{fontSize: 32}}>7,000￦</Col>
-                            </Row>
-                        </div>
-                        <div className='usingai-detail-middle'>
-                            <Row>
-                                <Col md={6}>
-                                    <span style={{fontSize: 36}}>주문 개수</span>
-                                </Col>
-                                <Col md={6}>
-                                    <span style={{fontSize: 36, color: 'rgba(255,0,0,1)'}}>3 개</span>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col md={6}>
-                                    <span style={{fontSize: 36}}>결제 금액</span>
-                                </Col>
-                                <Col md={6}>
-                                    <span style={{fontSize: 36, color: 'rgba(255,0,0,1)'}}>10,000 ￦</span>
-                                </Col>
-                            </Row>
-                        </div>
-                        <div className='usingai-detail-bottom'>
-                            <div style={{
-                                backgroundColor: 'rgba(255,81,81,1)', width: '70%', height: '100%',
-                                display: 'flex', justifyContent: 'center', alignItems: 'center'
-                            }} onClick={handleConfirm}>
-                                <span style={{fontSize: 60}}>주문 확정</span>
-                            </div>
-                            <div md={3} style={{
-                                backgroundColor: 'rgba(226,226,226,1)', width: '30%', height: '100%',
-                                display: 'flex', justifyContent: 'center', alignItems: 'center'
-                            }} onClick={handleClear}>
-                                <span style={{fontSize: 30, color: 'rgba(0,0,0,1)'}}>주문
-                                    취소</span>
-                            </div>
-                        </div>
-                    </div>
-                </Col>
-            </Row>
-            <audio controls>
-                <source id="audioSrc" type="audio/wav"/>
-                Your browser does not support the audio element.
-            </audio>
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        overflow: "auto",
+        display: "flex",
+        padding: "10px 0 0",
+      }}
+    >
+      <div style={{ flex: 2, display: "flex", flexDirection: "column" }}>
+        <div className="alert alert-light" style={styles.aiQuestion}>
+          <h4 className="alert-heading" style={{ textAlign: "left" }}>
+            대답하는 인공지능
+          </h4>
+          <p className="ai-answer" style={styles.aiAnswer}>
+            카페라떼가 두 잔 추가됐어요. 그 다음은 어떤 것을 주문하실 건가요?
+          </p>
         </div>
-    );
-};
+        <div className="alert alert-dark" style={styles.userAnswer}>
+          <h4 className="alert-heading">이용자</h4>
+          <div
+            className="user-answer"
+            style={{
+              fontSize: "x-large",
+            }}
+          >
+            카페라떼 두 잔 추가해줘.
+          </div>
+        </div>
+      </div>
+      <div style={{ flex: 1, padding: "0 0 0 10px", position: "relative" }}>
+        <div className="bd-example m-0 border-0" style={styles.orderList}>
+          <table
+            className="table table-striped"
+            style={{ fontSize: "x-large" }}
+          >
+            <thead>
+              <tr>
+                <th scope="col">메뉴</th>
+                <th scope="col">수량</th>
+                <th scope="col">가격</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">아메리카노</th>
+                <td>1</td>
+                <td>3,000</td>
+              </tr>
+              <tr>
+                <th scope="row">카페라떼</th>
+                <td>2</td>
+                <td>7,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="card text-bg-primary" style={styles.orderPrice}>
+          <ul
+            className="list-group list-group-flush"
+            style={{ fontSize: "xx-large" }}
+          >
+            <li className="list-group-item" style={styles.orderPriceItem}>
+              주문 수량 <span>2 잔</span>
+            </li>
+            <li className="list-group-item" style={styles.orderPriceItem}>
+              총 가격 <span>10,000 원</span>
+            </li>
+          </ul>
+          <div style={{ backgroundColor: "white", textAlign: "right" }}>
+            <button
+              type="button"
+              className="btn btn-warning"
+              style={styles.btnWarning}
+            >
+              주문 확정
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-success"
+              style={styles.btnOutlineSuccess}
+            >
+              주문 취소
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default UsingAI;

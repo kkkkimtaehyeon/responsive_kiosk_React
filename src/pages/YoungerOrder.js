@@ -1,296 +1,336 @@
-import React, {useState} from 'react';
-import './YoungerOrder.css'
-import {Row, Col,  Badge} from 'react-bootstrap'
-
-
-import Card from 'react-bootstrap/Card';
-import Pic from '../images/completeImg.png';
-import {useNavigate} from "react-router-dom";
-import AddModal from '../components/addModal';
-
-import {Input ,Button, Space} from "antd";
+import React, { useState } from "react";
+import "./YoungerOrder.css";
+import { Row, Col } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
+import Pic from "../assets/images/americano.jpg";
+import { useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import AddModal from "../components/addModal";
+import { Input, Button, Space } from "antd";
 
 const YoungerOrder = () => {
-    const navigate = useNavigate();
-    const dataList = [{
-        id: 1,
-        name: '아메리카노111111111111111111',
-        price: 3000,
-        temperature : 'Hot'
-    },
-        {
-            id: 2,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 3,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 4,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 5,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 6,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 7,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 8,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 9,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 10,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 11,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 12,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 13,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        }, {
-            id: 2,
-            name: '카페라떼',
-            price: 3500,
-            temperature : 'Hot'
-        },
-        {
-            id: 3,
-            name: '바닐라라떼',
-            price: 3700,
-            temperature : 'Hot'
-        }]
+  const navigate = useNavigate();
+  const dataList = [
+    { id: 1, name: "아메리카노", price: 3000 },
+    { id: 2, name: "카페라떼", price: 3500 },
+    { id: 3, name: "바닐라라떼", price: 3700 },
+    { id: 1, name: "아메리카노", price: 3000 },
+    { id: 2, name: "카페라떼", price: 3500 },
+    { id: 3, name: "바닐라라떼", price: 3700 },
+    { id: 1, name: "아메리카노", price: 3000 },
+    { id: 2, name: "카페라떼", price: 3500 },
+    { id: 3, name: "바닐라라떼", price: 3700 },
+    { id: 1, name: "아메리카노", price: 3000 },
+    { id: 2, name: "카페라떼", price: 3500 },
+    { id: 3, name: "바닐라라떼", price: 3700 },
+  ];
 
-    const [orderList, setOrderList] = useState([])
-    const [totalPrice, setTotalPrice] = useState(0)
+  const [orderList, setOrderList] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [modalShow, setModalShow] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState({});
 
-    const handleConfirm = () => {
-        navigate("/purchase");
+  const handleConfirm = () => {
+    navigate("/purchase");
+  };
+
+  const handleClear = () => {
+    setOrderList([]);
+    setTotalPrice(0);
+    navigate("/");
+  };
+
+  const handleOpen = (data) => {
+    setCurrentOrder(data);
+    setModalShow(true);
+  };
+
+  const handleAdd = (data) => {
+    const idx = orderList.findIndex((order) => order.id === data.id);
+    if (idx !== -1) {
+      const newOrderList = [...orderList];
+      newOrderList[idx].count += 1;
+      setOrderList(newOrderList);
+    } else {
+      setOrderList([...orderList, { ...data, count: 1 }]);
     }
+    setTotalPrice(totalPrice + data.price);
+  };
 
-    const handleClear = () => {
-        setOrderList([])
-        setTotalPrice(0)
-        navigate("/")
-    }
+  const handleDelete = (id) => {
+    const newOrderList = orderList.filter((order) => order.id !== id);
+    const deletedOrder = orderList.find((order) => order.id === id);
+    setOrderList(newOrderList);
+    setTotalPrice(totalPrice - deletedOrder.price * deletedOrder.count);
+  };
 
-    const [currentOrder, setCurrentOrder] = useState({})
+  const getOrderCount = () => {
+    let count = 0;
+    orderList.forEach((order) => {
+      count += order.count;
+    });
+    return count;
+  };
 
-    const handleOpen = (data) => {
-        setCurrentOrder(data)
-        setModalShow(true)
-    }
-
-    const [modalShow, setModalShow] = useState(false);
-    const handleAdd = (data) => {
-        const idx = orderList.findIndex((order) => {
-            return order.temperature === data.temperature && order.id === data.id
-        } )
-        if (idx !== -1) {
-            const newOrderList = [...orderList]
-            newOrderList[idx].count += 1
-            setOrderList(newOrderList)
-        } else {
-            setOrderList([...orderList, {...data, count: 1}])
-        }
-        setTotalPrice(totalPrice + data.price)
-    }
-
-    const getOrderCount = () => {
-        let count = 0
-        orderList.forEach((order) => {
-            count += order.count
-        })
-        return count
-    }
-
-
-    const add = (data) => {
-        const idx = orderList.findIndex((order) => {
-            return order.temperature === data.temperature && order.id === data.id
-        } )
-        debugger
-        if (idx !== -1) {
-            const newOrderList = [...orderList]
-            newOrderList[idx].count += 1
-            setOrderList(newOrderList)
-        } else {
-            setOrderList([...orderList, {...data, count: 1}])
-        }
-        setTotalPrice(totalPrice + data.price)
-    }
-    const reduce = (data) => {
-        const idx = orderList.findIndex((order) => {
-            return order.temperature === data.temperature && order.id === data.id
-        } )
-        if (idx !== -1) {
-            const newOrderList = [...orderList]
-            if(newOrderList[idx].count!==1){
-                newOrderList[idx].count -= 1
-            }else
-            {
-                return
-            }
-
-            setOrderList(newOrderList)
-        } else {
-            setOrderList([...orderList, {...data, count: 1}])
-        }
-        setTotalPrice(totalPrice - data.price)
-    }
-    const reduceone =
-        () => {
-
-            // this.props.dispatch(setdata({
-            //     id,
-            //     count
-            // }))
-        }
-    return (
-        <div className='youngerorder-container'>
-            <Row style={{height: '100%', width: '100%'}}>
-                <Col md={2}>
-                    <ul className="navbar-nav flex-column youngerorder-nav-list">
-                        <li className="nav-item">
-                            <button className="btn btn-primary nav-link">커피</button>
-                        </li>
-                        <li className="nav-item">
-                            <button className="btn btn-secondary nav-link">논커피</button>
-                        </li>
-                        <li className="nav-item">
-                            <button className="btn btn-warning nav-link">주스</button>
-                        </li>
-                        <li className="nav-item">
-                            <button className="btn btn-danger nav-link">디저트</button>
-                        </li>
-                        <li className="nav-item">
-                            <button className="btn btn-success nav-link">티</button>
-                        </li>
-                    </ul>
-                </Col>
-                <Col md={6} className='youngerorder-middle'>
-                    <Row style={{height:500,overflow:"auto"}}>
-                        {dataList.map((data) => {
-                            return (
-                                <Col md={3} key={data.id} style={{margin: '5px 0'}}>
-                                    <Card onClick={() => handleOpen(data)}>
-                                        <Card.Img variant="top" src={Pic}/>
-                                        <Card.Body>
-                                            <Card.Title className="truncate-title">{data.name}</Card.Title>
-                                            <Card.Text>
-                                                <span style={{color: 'red'}}>{data.price}￦</span>
-                                            </Card.Text>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>)
-                        })}
-                    </Row>
-                </Col>
-                <Col md={4}>
-                    <div className='youngerorder-detail'>
-                        <div className='youngerorder-detail-top'>
-
-                            <Row>
-                                <Col md={2} style={{fontSize: 18}}>주문</Col>
-                                <Col md={4} style={{fontSize: 18}}>주문</Col>
-                                <Col md={4} style={{fontSize: 18}}>주문</Col>
-                                <Col md={2} style={{fontSize: 18}}>주문</Col>
-                            </Row>
-                            {orderList.map((order) => {
-
-                                    return (
-                                        <Row key={order.id}>
-                                            <Col md={2} style={{fontSize: 18}}>
-                                                <Badge bg={order.temperature ==='Hot'?'danger':'primary' }>{order.temperature}</Badge></Col>
-                                            <Col md={4} style={{fontSize: 18}} className="truncate-title">{order.name}</Col>
-                                            <Col md={4} style={{fontSize: 18}}>
-                                                <Space.Compact style={{ width: '100%' }}>
-                                                    <Button  size ="small" type="primary" onClick={() => reduce(order)}>-</Button>
-
-                                                    <Input  size ="small" value={order.count} />
-
-                                                    <Button size ="small" type="primary" onClick={() => add(order)}>+</Button>
-                                                </Space.Compact>
-                                            </Col>
-                                            <Col md={2} style={{fontSize: 18}}>{order.price * order.count}￦</Col>
-                                        </Row>
-                                    )
-                                }
-                            )}
-                        </div>
-                        <div className='youngerorder-detail-middle'>
-                            <Row>
-                                <Col md={6}>
-                                    <span style={{fontSize: 36}}>주문 개수</span>
-                                </Col>
-                                <Col md={6}>
-                                    <span style={{fontSize: 36, color: 'rgba(255,0,0,1)'}}>{getOrderCount()} 개</span>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col md={6}>
-                                    <span style={{fontSize: 36}}>결제 금액</span>
-                                </Col>
-                                <Col md={6}>
-                                    <span style={{fontSize: 36, color: 'rgba(255,0,0,1)'}}>{totalPrice} ￦</span>
-                                </Col>
-                            </Row>
-                        </div>
-                        <div className='youngerorder-detail-bottom'>
-                            <div style={{
-                                backgroundColor: 'rgba(255,81,81,1)', width: '70%', height: '100%',
-                                display: 'flex', justifyContent: 'center', alignItems: 'center'
-                            }} onClick={handleConfirm}>
-                                <span style={{fontSize: 60}}>주문 확정</span>
-                            </div>
-                            <div md={3} style={{
-                                backgroundColor: 'rgba(226,226,226,1)', width: '30%', height: '100%',
-                                display: 'flex', justifyContent: 'center', alignItems: 'center'
-                            }} onClick={handleClear}>
-                                <span style={{fontSize: 30, color: 'rgba(0,0,0,1)'}}>주문
-                                    취소</span>
-                            </div>
-                        </div>
-                    </div>
-                </Col>
-            </Row>
-            <AddModal
-                data={currentOrder}
-                show={modalShow}
-                onHide={() => setModalShow(false)}
-                onAdd={handleAdd}/>
-        </div>
+  const add = (data) => {
+    const idx = orderList.findIndex(
+      (order) => order.temperature === data.temperature && order.id === data.id
     );
+    if (idx !== -1) {
+      const newOrderList = [...orderList];
+      newOrderList[idx].count += 1;
+      setOrderList(newOrderList);
+    } else {
+      setOrderList([...orderList, { ...data, count: 1 }]);
+    }
+    setTotalPrice(totalPrice + data.price);
+  };
+
+  const reduce = (data) => {
+    const idx = orderList.findIndex(
+      (order) => order.temperature === data.temperature && order.id === data.id
+    );
+    if (idx !== -1) {
+      const newOrderList = [...orderList];
+      if (newOrderList[idx].count > 1) {
+        newOrderList[idx].count -= 1;
+        setOrderList(newOrderList);
+        setTotalPrice(totalPrice - data.price);
+      } else {
+        handleDelete(data.id);
+      }
+    }
+  };
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        overflow: "auto",
+        padding: 10,
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ width: 300, overflow: "auto", scrollbarWidth: "none" }}>
+        <ul className="navbar-nav flex-column">
+          <li className="nav-item">
+            <button
+              className="btn btn-primary nav-link"
+              style={{
+                fontSize: "48pt",
+                width: "250px",
+                height: "150px",
+              }}
+            >
+              커피
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className="btn btn-secondary nav-link"
+              style={{
+                fontSize: "48pt",
+                width: "250px",
+                height: "150px",
+              }}
+            >
+              논커피
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className="btn btn-warning nav-link"
+              style={{
+                fontSize: "48pt",
+                width: "250px",
+                height: "150px",
+              }}
+            >
+              주스
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className="btn btn-danger nav-link"
+              style={{
+                fontSize: "48pt",
+                width: "250px",
+                height: "150px",
+              }}
+            >
+              디저트
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className="btn btn-success nav-link"
+              style={{
+                fontSize: "48pt",
+                width: "250px",
+                height: "150px",
+              }}
+            >
+              티
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div
+        style={{ flex: 1, display: "flex", flexWrap: "wrap", overflow: "auto" }}
+      >
+        {dataList.map((item) => (
+          // <Col key={item.id} style={{ padding: "0 10px" }}>
+          <Card
+            onClick={() => handleOpen(item)}
+            style={{ width: 200, margin: "0 0 10px 10px" }}
+          >
+            <Card.Img variant="top" src={Pic} />
+            <Card.Body>
+              <Card.Title>
+                <h3 style={{ textAlign: "center" }}>{item.name}</h3>
+              </Card.Title>
+              <Card.Text>
+                <h4 style={{ color: "red", textAlign: "center" }}>
+                  {item.price}￦
+                </h4>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          // </Col>
+        ))}
+      </div>
+      <div style={{ width: 450, position: "relative" }}>
+        <table
+          className="table table-striped"
+          style={{
+            fontSize: "large",
+            // position: "absolute",
+            // top: "10%",
+            // left: "69%",
+            // width: "31%",
+          }}
+        >
+          <thead>
+            <tr>
+              <th scope="col" className="menu-column">
+                메뉴
+              </th>
+              <th scope="col" className="quantity-column">
+                수량
+              </th>
+              <th scope="col" className="price-column">
+                가격
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {orderList.map((order, index) => (
+              <tr key={index}>
+                <td>
+                  <div className="d-flex align-items-center">
+                    <button
+                      className="btn btn-danger me-2"
+                      type="button"
+                      onClick={() => handleDelete(order.id)}
+                    >
+                      삭제
+                    </button>
+                    <span>{order.name}</span>
+                  </div>
+                </td>
+                <td>
+                  <div className="input-group">
+                    <button
+                      className="btn btn-outline-secondary"
+                      type="button"
+                      onClick={() => reduce(order)}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={order.count}
+                      style={{ maxWidth: "50%" }}
+                      disabled
+                    />
+                    <button
+                      className="btn btn-outline-secondary"
+                      type="button"
+                      onClick={() => add(order)}
+                    >
+                      +
+                    </button>
+                  </div>
+                </td>
+                <td>{order.price * order.count}￦</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div
+          style={{
+            textAlign: "right",
+            position: "absolute",
+            bottom: 10,
+            right: 10,
+            left: 10,
+          }}
+        >
+          <ul
+            className="list-group list-group-flush"
+            style={{ fontSize: "x-large" }}
+          >
+            <li className="list-group-item d-flex justify-content-between">
+              주문 수량 <span>{getOrderCount()} 잔</span>
+            </li>
+            <li className="list-group-item d-flex justify-content-between">
+              총 가격 <span>{totalPrice} 원</span>
+            </li>
+          </ul>
+          <button
+            type="button"
+            className="btn btn-warning"
+            style={{
+              // position: "absolute",
+              // left: "68.5%",
+              // top: "84%",
+              // width: "20.5%",
+              // height: "15%",
+              fontSize: "xx-large",
+            }}
+            onClick={handleConfirm}
+          >
+            주문 확정
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-success"
+            style={{
+              // position: "absolute",
+              // left: "89%",
+              // top: "84%",
+              // width: "10.5%",
+              // height: "15%",
+              fontSize: "xx-large",
+            }}
+            onClick={handleClear}
+          >
+            주문 취소
+          </button>
+        </div>
+      </div>
+      <AddModal
+        data={currentOrder}
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        onAdd={handleAdd}
+      />
+    </div>
+  );
 };
 
 export default YoungerOrder;
