@@ -15,9 +15,10 @@ const Payment = () => {
     }
 
     useEffect(() => {
-        console.log(state.orderData);
+        const orderData = JSON.parse(state.orderData);
+        console.log(orderData);
         if(isPaid) {
-            sendOrderToServer(state.orderData);
+            sendOrderToServer(orderData);
         }
     }, [isPaid]);
 
