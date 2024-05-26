@@ -31,6 +31,8 @@ const WebSocketTest = () => {
             if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
                 wsRef.current.close();
                 audioContextRef.current.close();
+                audioQueueRef.current = [];
+                isPlayingRef.current = false;
             }
         };
     }, []);
@@ -53,6 +55,8 @@ const WebSocketTest = () => {
             return;
         }
         wsRef.current.send(transcript);
+        console.log(`${transcript}가 전달되었습니다.`);
+        console.time("tts 전송 테스트");
 
         wsRef.current.onmessage = async (event) => {
             if (event.data instanceof ArrayBuffer) {
@@ -75,7 +79,7 @@ const WebSocketTest = () => {
             } else {
                 try {
                     const orderData = JSON.parse(event.data);
-                    console.log('Received non-binary message:', orderData);
+                    console.log(`Received order${typeof orderData}:`, orderData);
                     navigate("/payment", { state: { orderData: orderData } });
                 } catch (e) {
                     setGptScript(event.data);
@@ -103,6 +107,7 @@ const WebSocketTest = () => {
                 } else {
                     isPlayingRef.current = false;
                     console.log('All audio buffers played');
+                    console.timeEnd("tts 전송 테스트");
                 }
             };
         } else {
@@ -116,6 +121,11 @@ const WebSocketTest = () => {
             SpeechRecognition.stopListening();
             startStreaming();
         } else {
+            if(isPlayingRef.current === true) {//스트리밍일 때만 가능
+                isPlayingRef.current = false;
+                audioQueueRef.current = [];
+            }
+
             resetTranscript();
             SpeechRecognition.startListening({ language: 'ko-KR', continuous: true });
         }
