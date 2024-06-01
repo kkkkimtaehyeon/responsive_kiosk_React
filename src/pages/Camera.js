@@ -1,8 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import axios from "axios";
-const WebcamCapture = () => {
+import {useNavigate} from "react-router-dom";
+const Camera = () => {
     const videoRef = useRef();
     const canvasRef = useRef();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const enableVideoStream = async () => {
@@ -50,9 +52,14 @@ const WebcamCapture = () => {
                 const formData = new FormData();
                 formData.append('capturedImg', blob, 'captured_face.png');
 
-                axios.post('http://localhost:8080/face-capture', formData)
+                axios.post('http://localhost:8000/fast/api/face-recognition', formData)
                     .then(response => {
-                        // Handle response from server if needed
+                        if(response.data === 1 || 2) {
+                            navigate("/search-order");
+                        }
+                        else if(response.data === 2) {
+                            navigate("/ai-order");
+                        }
                     })
                     .catch(error => {
                         console.error('Error uploading image:', error);
@@ -73,4 +80,4 @@ const WebcamCapture = () => {
     );
 };
 
-export default WebcamCapture;
+export default Camera;

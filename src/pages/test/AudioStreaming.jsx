@@ -86,9 +86,6 @@ const WebSocketTest = () => {
                 }
             }
         };
-
-
-
     };
 
     const playNextAudio = () => {

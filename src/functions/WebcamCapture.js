@@ -2,22 +2,19 @@ import React, { useRef, useEffect } from 'react';
 import axios from "axios";
 import uuid from 'react-uuid'
 import {useNavigate} from "react-router-dom";
+import {Container} from "react-bootstrap";
 
 const WebcamCapture = () => {
     const videoRef = useRef();
     const canvasRef = useRef();
     const navigate = useNavigate();
 
-    //should be fixed
-    const navigateHandler = (generation) => {
-        if(generation === "young") {
-            navigate("/usingai");
+    const navigateHandler = (option) => {
+        if(option === 1 || 2) {
+            navigate("/search-order");
         }
-        else if(generation === "middle"){
-            navigate("/usingai");
-        }
-        else {
-            navigate("/usingai");
+        else if(option === 2) {
+            navigate("/ai-order");
         }
     }
 
@@ -77,8 +74,7 @@ const WebcamCapture = () => {
 
         axios.post('http://localhost:8000/fast/api/face-recognition', formData)
             .then(response => {
-                console.log(response.data);
-                navigateHandler(response.data.generation);
+                navigateHandler(response.data);
             })
             .catch(error => {
                 console.error('Error uploading image:', error);
@@ -89,12 +85,17 @@ const WebcamCapture = () => {
 
 
     return (
-        <div>
-            <video ref={videoRef} autoPlay={true} />
-            <button onClick={takeSnapshot}>매장</button>
-            <button onClick={takeSnapshot}>포장</button>
+        <Container style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 0 }}>
+            <video ref={videoRef} autoPlay={true} style={{ display: 'none' }} />
             <canvas ref={canvasRef} style={{ display: 'none' }} />
-        </div>
+            <button
+                className="btn btn-lg"
+                onClick={takeSnapshot}
+                style={{ width: '100%', height: '100%' }}
+            >
+                아무곳이나 터치해 시작하세요
+            </button>
+        </Container>
     );
 };
 

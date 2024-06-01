@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import './Home.css'
 import { useNavigate } from "react-router-dom";
 import WebcamCapture from '../functions/WebcamCapture';
+import Camera from "./Camera";
 
 
 function AIOptionModal(props) {
@@ -52,27 +53,7 @@ const Home = () => {
     return (
         <div className='first-container'>
             <div className='first-picture-row'>
-                <WebcamCapture />
-                {/* <span>
-                    ABC 카페
-                </span>
-                <div className='first-picture'>
-                    <img src={logo} alt='pic' />
-                </div> */}
-            </div>
-            <div className='first-description'>
-                <p>
-                    ABC 카페에 오신 여러분을 환영합니다!
-                </p>
-                <p>
-                    ABC 카페의 키오스크는 여러분의 얼굴을 캡쳐 후,
-                </p>
-                <p>
-                    인식된 연령에 맞춰서 맞춤형 인터페이스를 제공합니다
-                </p>
-                <p>
-                    맞춤형 인터페이스를 통해 더 편해진 키오스크의 경험을 제공해드립니다!
-                </p>
+                <Camera />
             </div>
             <div className='first-bottom'>
                 <button className='first-btn' onClick={handleClick}>매장 이용</button>
