@@ -8,11 +8,16 @@ import Payment from "./pages/AI_search/Payment";
 import OrderComplete from "./pages/AI_search/OrderComplete";
 import AudioStreaming from "./pages/test/AudioStreaming";
 import WebcamCapture from "./functions/WebcamCapture";
+import Index from "./pages/Index";
 
 function App() {
     const router = createBrowserRouter([
         {
             path: "/",
+            element: <Index />
+        },
+        {
+            path: "main",
             element: <WebcamCapture />
         },
 

@@ -8,7 +8,7 @@ const OrderComplete = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            navigate("/");
+            navigate("/main");
         }, 10000)
     }, []);
 
