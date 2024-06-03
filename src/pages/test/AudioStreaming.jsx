@@ -12,7 +12,6 @@ const WebSocketTest = () => {
     const isPlayingRef = useRef(false);
     const [gptScript, setGptScript] = useState('');
     const navigate = useNavigate();
-    const tempPort = "localhost:8000";
 
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
@@ -39,7 +38,7 @@ const WebSocketTest = () => {
     }, []);
 
     const connect = () => {
-        wsRef.current = new WebSocket(`ws://${tempPort}/ws/v4/openai`);
+        wsRef.current = new WebSocket('ws://localhost:8000/ws/v4/openai');
         wsRef.current.binaryType = 'arraybuffer';
 
         wsRef.current.onopen = () => {
@@ -87,6 +86,9 @@ const WebSocketTest = () => {
                 }
             }
         };
+
+
+
     };
 
     const playNextAudio = () => {

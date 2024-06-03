@@ -1,9 +1,6 @@
-.youngerorder-container {
-    height: 100%;
-}
-
 .youngerorder-middle {
     padding: 10px 0;
+    text-align: center;
 }
 
 .youngerorder-detail {
@@ -36,4 +33,6 @@
 .youngerorder-nav-list button {
     font-size: 48pt;
     width: 100%;
+    height: 20vh;
+    font-family: 'KCC-Hanbit';
 }

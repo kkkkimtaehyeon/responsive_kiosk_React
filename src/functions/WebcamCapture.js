@@ -1,22 +1,25 @@
 import React, { useRef, useEffect } from 'react';
 import axios from "axios";
-import uuid from 'react-uuid';
-import { useNavigate } from "react-router-dom";
-import { Container } from "react-bootstrap";
+import uuid from 'react-uuid'
+import {useNavigate} from "react-router-dom";
 
 const WebcamCapture = () => {
-    const videoRef = useRef(null);
-    const canvasRef = useRef(null);
+    const videoRef = useRef();
+    const canvasRef = useRef();
     const navigate = useNavigate();
-    const tempPort = "localhost:8000";
 
-    const navigateHandler = (option) => {
-        if (option === "1" || option === "2") {
-            navigate("/search-order");
-        } else if (option === "3") { // 수정된 부분
-            navigate("/ai-order");
+    //should be fixed
+    const navigateHandler = (generation) => {
+        if(generation === "young") {
+            navigate("/usingai");
         }
-    };
+        else if(generation === "middle"){
+            navigate("/usingai");
+        }
+        else {
+            navigate("/usingai");
+        }
+    }
 
     useEffect(() => {
         const enableVideoStream = async () => {
@@ -42,56 +45,56 @@ const WebcamCapture = () => {
                 });
             }
         };
+
     }, []);
 
-    const takeSnapshot = async () => {
+    const takeSnapshot= async () => {
         if (videoRef.current && canvasRef.current) {
             const video = videoRef.current;
             const canvas = canvasRef.current;
             const context = canvas.getContext('2d');
 
+            //웹캡 스펙에 따라 달라질 수 있음.
             console.log(video.videoWidth); //640
             console.log(video.videoHeight); //480
 
-            canvas.width = 640;
-            canvas.height = 480;
+            //width, height 확인하고 설정
+            canvasRef.current.width = 640;
+            canvasRef.current.height = 480;
 
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            context.drawImage(video, 0, 0, canvasRef.current.width, canvasRef.current.height);
 
             canvas.toBlob(blob => {
-                if (blob) {
-                    sendSnapshotToServer(blob);
-                }
+                sendSnapShotToServer(blob);
             }, 'image/jpeg');
         }
     };
 
-    const sendSnapshotToServer = (blob) => {
+    const sendSnapShotToServer = (blob) => {
         const formData = new FormData();
-        const fileName = `captured_face_${uuid()}.jpg`;
+        const fileName = `captured_face_${uuid()}.jpg`
         formData.append('image_file', blob, fileName);
 
-        axios.post(`http://${tempPort}/fast/api/face-recognition`, formData)
+        axios.post('http://localhost:8000/fast/api/face-recognition', formData)
             .then(response => {
-                navigateHandler(response.data.option);
+                console.log(response.data);
+                navigateHandler(response.data.generation);
             })
             .catch(error => {
                 console.error('Error uploading image:', error);
             });
-    };
+
+    }
+
+
 
     return (
-        <Container style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 0 }}>
-            <video ref={videoRef} autoPlay={true} style={{ display: 'none' }} />
+        <div>
+            <video ref={videoRef} autoPlay={true} />
+            <button onClick={takeSnapshot}>매장</button>
+            <button onClick={takeSnapshot}>포장</button>
             <canvas ref={canvasRef} style={{ display: 'none' }} />
-            <button
-                className="btn btn-lg"
-                onClick={takeSnapshot}
-                style={{ width: '100%', height: '100%' }}
-            >
-                아무곳이나 터치해 시작하세요
-            </button>
-        </Container>
+        </div>
     );
 };
 

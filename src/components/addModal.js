@@ -5,22 +5,26 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
+import Badge from 'react-bootstrap/Badge';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 const AddModal = (props) => {
     const { show, data, onAdd, onHide } = props;
 
+    const [temperature, setTemperature] = useState('');
+
     const handleAdd = () => {
-        onAdd(data);
+        onAdd({ ...data, temperature });
         handleCancel();
-    }
+    };
 
     const handleCancel = () => {
         onHide();
-    }
-    const [temperature, setTemperature] = useState('');
+    };
 
-    const handleTemperatureChange = (event) => {
-        setTemperature(event.target.value);
+    const handleTemperatureChange = (value) => {
+        setTemperature(value);
     };
 
     return (
@@ -47,27 +51,32 @@ const AddModal = (props) => {
                         <Card.Title>음료의 온도</Card.Title>
                         <Card.Text>
                             <Form>
-                                <div className="mb-3">
-                                    <Form.Check
+                                <ButtonGroup toggle className="mb-3">
+                                    <ToggleButton
+                                        key="hot"
+                                        id="hot"
                                         type="radio"
-                                        label="Hot"
+                                        variant="outline-danger"
                                         name="temperature"
                                         value="Hot"
                                         checked={temperature === 'Hot'}
-                                        onChange={handleTemperatureChange}
-                                        id="hotRadio"
-                                    />
-
-                                    <Form.Check
+                                        onChange={(e) => handleTemperatureChange(e.currentTarget.value)}
+                                    >
+                                        Hot
+                                    </ToggleButton>
+                                    <ToggleButton
+                                        key="cold"
+                                        id="cold"
                                         type="radio"
-                                        label="Cold"
+                                        variant="outline-primary"
                                         name="temperature"
                                         value="Cold"
                                         checked={temperature === 'Cold'}
-                                        onChange={handleTemperatureChange}
-                                        id="coldRadio"
-                                    />
-                                </div>
+                                        onChange={(e) => handleTemperatureChange(e.currentTarget.value)}
+                                    >
+                                        Cold
+                                    </ToggleButton>
+                                </ButtonGroup>
                             </Form>
                         </Card.Text>
                     </Card.Body>
@@ -79,6 +88,6 @@ const AddModal = (props) => {
             </Modal.Body>
         </Modal>
     );
-}
+};
 
 export default AddModal;
