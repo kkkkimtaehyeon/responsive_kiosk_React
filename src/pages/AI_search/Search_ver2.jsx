@@ -1,10 +1,12 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import { CardBody, Col, Container, Row } from "react-bootstrap";
+import {CardBody, Col, Container, Row} from "react-bootstrap";
 import SearchedMenuList from "./components/SearchedMenuList";
 
 const SearchV2 = ({ handleOpen }) => {
-    const ingredients = useMemo(() => ['주스', '커피', '우유', '차', '당도', '과일', '초콜릿'], []);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const ingredients =  ['주스', '커피', '우유', '차', '당도', '과일', '초콜릿'];
     const [ingredientBlocks, setIngredientBlocks] = useState([]);
     const [clickedIngredients, setClickedIngredients] = useState([]);
     const [isEmpty, setIsEmpty] = useState(true);
@@ -36,7 +38,8 @@ const SearchV2 = ({ handleOpen }) => {
                 );
             })
         );
-    }, [clickedIngredients, toggleIngredient]);
+    }, [clickedIngredients, ingredients]);
+
 
     const goSearch = () => {
         if (!isEmpty) {

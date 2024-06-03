@@ -32,9 +32,12 @@ const WebcamCapture = () => {
 
         enableVideoStream();
 
+        // 안전한 videoRef 참조 생성
+        const videoRefCurrent = videoRef.current;
+
         return () => {
-            if (videoRef.current && videoRef.current.srcObject) {
-                const stream = videoRef.current.srcObject;
+            if (videoRefCurrent && videoRefCurrent.srcObject) {
+                const stream = videoRefCurrent.srcObject;
                 const tracks = stream.getTracks();
 
                 tracks.forEach(track => {
@@ -42,7 +45,8 @@ const WebcamCapture = () => {
                 });
             }
         };
-    }, []);
+    }, [videoRef]);
+
 
     const takeSnapshot = async () => {
         if (videoRef.current && canvasRef.current) {
