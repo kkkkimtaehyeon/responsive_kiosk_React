@@ -8,6 +8,7 @@ const WebcamCapture = () => {
     const videoRef = useRef();
     const canvasRef = useRef();
     const navigate = useNavigate();
+    const tempPort = "localhost:8000";
 
     const navigateHandler = (option) => {
         if(option === 1 || 2) {
@@ -72,7 +73,7 @@ const WebcamCapture = () => {
         const fileName = `captured_face_${uuid()}.jpg`
         formData.append('image_file', blob, fileName);
 
-        axios.post('http://localhost:8000/fast/api/face-recognition', formData)
+        axios.post(`http://${tempPort}/fast/api/face-recognition`, formData)
             .then(response => {
                 navigateHandler(response.data);
             })
