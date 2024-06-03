@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import { Button, Col, Row } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Button, Col, Row} from 'react-bootstrap';
+import {useNavigate} from 'react-router-dom';
 import AddModal from '../../components/addModal';
 import OrderList from './components/OrderList';
 import OrderStats from './components/OrderStats';
 import SearchV2 from './Search_ver2';
 import TakeoutModal from './components/TakeoutModal';
-import axios from "axios";
 
 const SearchOrder = () => {
     const navigate = useNavigate();
@@ -15,10 +14,6 @@ const SearchOrder = () => {
     const [currentOrder, setCurrentOrder] = useState({});
     const [modalShow, setModalShow] = useState(false);
     const [takeoutModalShow, setTakeoutModalShow] = useState(false);
-
-    const handleConfirm = () => {
-        navigate('/purchase');
-    };
 
     const handleClear = () => {
         setOrderList([]);

@@ -10,7 +10,7 @@ const OrderComplete = () => {
         setTimeout(() => {
             navigate("/main");
         }, 10000)
-    }, []);
+    }, [navigate]);
 
     return (
         <Container>
