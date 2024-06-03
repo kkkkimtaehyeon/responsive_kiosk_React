@@ -1,5 +1,5 @@
 import {Card, CardBody, Button, Container, Row} from "react-bootstrap";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useCallback} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 
@@ -9,20 +9,11 @@ const Payment = () => {
 
     const [isPaid, setIsPaid] = useState(false);
 
-
     const pay = () => {
         setIsPaid(true);
     }
 
-    useEffect(() => {
-        const orderData = JSON.parse(state.orderData);
-        console.log(orderData);
-        if(isPaid) {
-            sendOrderToServer(orderData);
-        }
-    }, [isPaid]);
-
-    const sendOrderToServer = (data) => {
+    const sendOrderToServer = useCallback((data) => {
         axios.post("http://localhost:8080/api/orders", data)
             .then(response => {
                 const orderId = response.data;
@@ -31,9 +22,16 @@ const Payment = () => {
             })
             .catch(error => {
                 console.log("order failed", error);
-            })
-    }
+            });
+    }, [navigate]);
 
+    useEffect(() => {
+        const orderData = JSON.parse(state.orderData);
+        console.log(orderData);
+        if(isPaid) {
+            sendOrderToServer(orderData);
+        }
+    }, [isPaid, state.orderData, sendOrderToServer]);
 
     return (
         <Container>
@@ -51,8 +49,6 @@ const Payment = () => {
                 </CardBody>
             </Card>
         </Container>
-
-
     );
 }
 

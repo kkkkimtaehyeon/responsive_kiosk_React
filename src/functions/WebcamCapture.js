@@ -5,18 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 const WebcamCapture = () => {
-    const videoRef = useRef();
-    const canvasRef = useRef();
+    const videoRef = useRef(null);
+    const canvasRef = useRef(null);
     const navigate = useNavigate();
     const tempPort = "localhost:8000";
 
     const navigateHandler = (option) => {
-        if (option === 1 || option === 2) {
+        if (option === "1" || option === "2") {
             navigate("/search-order");
-        } else if (option === 2) {
+        } else if (option === "3") { // 수정된 부분
             navigate("/ai-order");
         }
-    }
+    };
 
     useEffect(() => {
         const enableVideoStream = async () => {
@@ -33,9 +33,8 @@ const WebcamCapture = () => {
         enableVideoStream();
 
         return () => {
-            const videoNode = videoRef.current;
-            if (videoNode && videoNode.srcObject) {
-                const stream = videoNode.srcObject;
+            if (videoRef.current && videoRef.current.srcObject) {
+                const stream = videoRef.current.srcObject;
                 const tracks = stream.getTracks();
 
                 tracks.forEach(track => {
@@ -43,7 +42,6 @@ const WebcamCapture = () => {
                 });
             }
         };
-
     }, []);
 
     const takeSnapshot = async () => {
@@ -52,35 +50,35 @@ const WebcamCapture = () => {
             const canvas = canvasRef.current;
             const context = canvas.getContext('2d');
 
-            // 웹캠 스펙에 따라 달라질 수 있음.
-            console.log(video.videoWidth); // 640
-            console.log(video.videoHeight); // 480
+            console.log(video.videoWidth); //640
+            console.log(video.videoHeight); //480
 
-            // width, height 확인하고 설정
-            canvasRef.current.width = 640;
-            canvasRef.current.height = 480;
+            canvas.width = 640;
+            canvas.height = 480;
 
-            context.drawImage(video, 0, 0, canvasRef.current.width, canvasRef.current.height);
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
             canvas.toBlob(blob => {
-                sendSnapShotToServer(blob);
+                if (blob) {
+                    sendSnapshotToServer(blob);
+                }
             }, 'image/jpeg');
         }
     };
 
-    const sendSnapShotToServer = (blob) => {
+    const sendSnapshotToServer = (blob) => {
         const formData = new FormData();
         const fileName = `captured_face_${uuid()}.jpg`;
         formData.append('image_file', blob, fileName);
 
         axios.post(`http://${tempPort}/fast/api/face-recognition`, formData)
             .then(response => {
-                navigateHandler(response.data);
+                navigateHandler(response.data.option);
             })
             .catch(error => {
                 console.error('Error uploading image:', error);
             });
-    }
+    };
 
     return (
         <Container style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 0 }}>

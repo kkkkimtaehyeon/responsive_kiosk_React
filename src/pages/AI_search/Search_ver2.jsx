@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import axios from "axios";
 import { CardBody, Col, Container, Row } from "react-bootstrap";
 import SearchedMenuList from "./components/SearchedMenuList";
 
 const SearchV2 = ({ handleOpen }) => {
-    const ingredients =['주스', '커피', '우유', '차', '당도', '과일', '초콜릿'];
+    const ingredients = useMemo(() => ['주스', '커피', '우유', '차', '당도', '과일', '초콜릿'], []);
     const [ingredientBlocks, setIngredientBlocks] = useState([]);
     const [clickedIngredients, setClickedIngredients] = useState([]);
     const [isEmpty, setIsEmpty] = useState(true);
@@ -36,7 +36,7 @@ const SearchV2 = ({ handleOpen }) => {
                 );
             })
         );
-    }, [ingredients, clickedIngredients]);
+    }, [clickedIngredients, toggleIngredient]);
 
     const goSearch = () => {
         if (!isEmpty) {
@@ -45,9 +45,7 @@ const SearchV2 = ({ handleOpen }) => {
                 .then(response => {
                     console.log('recommendation menus are successfully arrived! : ', response.data);
                     visibilityHandler();
-                    setMenus(response.data);
-                    //response.data === null 이면 "해당되는 메뉴가 없습니다!" 출력
-                    
+                    setMenus(response.data.menuList || []);
                 })
                 .catch(error => {
                     console.error(error);
@@ -90,7 +88,7 @@ const SearchV2 = ({ handleOpen }) => {
                         <button className="btn btn-info rounded-4" type="button" onClick={reset}>
                             <h3>다시 검색</h3>
                         </button>
-                        {menus && menus.menuList && menus.menuList.length > 0 ? (
+                        {menus.length > 0 ? (
                             <SearchedMenuList menus={menus} handleOpen={handleOpen} />
                         ) : (
                             <p><h1>해당되는 메뉴가 없습니다!</h1></p>
