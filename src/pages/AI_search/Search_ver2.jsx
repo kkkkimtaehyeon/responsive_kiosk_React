@@ -4,7 +4,7 @@ import { CardBody, Col, Container, Row } from "react-bootstrap";
 import SearchedMenuList from "./components/SearchedMenuList";
 
 const SearchV2 = ({ handleOpen }) => {
-    const [ingredients, setIngredients] = useState(['주스', '커피', '우유', '차', '당도', '과일', '초콜릿']);
+    const ingredients =['주스', '커피', '우유', '차', '당도', '과일', '초콜릿'];
     const [ingredientBlocks, setIngredientBlocks] = useState([]);
     const [clickedIngredients, setClickedIngredients] = useState([]);
     const [isEmpty, setIsEmpty] = useState(true);

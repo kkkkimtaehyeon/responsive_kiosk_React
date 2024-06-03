@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import axios from "axios";
-import uuid from 'react-uuid'
-import {useNavigate} from "react-router-dom";
-import {Container} from "react-bootstrap";
+import uuid from 'react-uuid';
+import { useNavigate } from "react-router-dom";
+import { Container } from "react-bootstrap";
 
 const WebcamCapture = () => {
     const videoRef = useRef();
@@ -11,10 +11,9 @@ const WebcamCapture = () => {
     const tempPort = "localhost:8000";
 
     const navigateHandler = (option) => {
-        if(option === 1 || 2) {
+        if (option === 1 || option === 2) {
             navigate("/search-order");
-        }
-        else if(option === 2) {
+        } else if (option === 2) {
             navigate("/ai-order");
         }
     }
@@ -34,8 +33,9 @@ const WebcamCapture = () => {
         enableVideoStream();
 
         return () => {
-            if (videoRef.current && videoRef.current.srcObject) {
-                const stream = videoRef.current.srcObject;
+            const videoNode = videoRef.current;
+            if (videoNode && videoNode.srcObject) {
+                const stream = videoNode.srcObject;
                 const tracks = stream.getTracks();
 
                 tracks.forEach(track => {
@@ -46,17 +46,17 @@ const WebcamCapture = () => {
 
     }, []);
 
-    const takeSnapshot= async () => {
+    const takeSnapshot = async () => {
         if (videoRef.current && canvasRef.current) {
             const video = videoRef.current;
             const canvas = canvasRef.current;
             const context = canvas.getContext('2d');
 
-            //웹캡 스펙에 따라 달라질 수 있음.
-            console.log(video.videoWidth); //640
-            console.log(video.videoHeight); //480
+            // 웹캠 스펙에 따라 달라질 수 있음.
+            console.log(video.videoWidth); // 640
+            console.log(video.videoHeight); // 480
 
-            //width, height 확인하고 설정
+            // width, height 확인하고 설정
             canvasRef.current.width = 640;
             canvasRef.current.height = 480;
 
@@ -70,7 +70,7 @@ const WebcamCapture = () => {
 
     const sendSnapShotToServer = (blob) => {
         const formData = new FormData();
-        const fileName = `captured_face_${uuid()}.jpg`
+        const fileName = `captured_face_${uuid()}.jpg`;
         formData.append('image_file', blob, fileName);
 
         axios.post(`http://${tempPort}/fast/api/face-recognition`, formData)
@@ -80,10 +80,7 @@ const WebcamCapture = () => {
             .catch(error => {
                 console.error('Error uploading image:', error);
             });
-
     }
-
-
 
     return (
         <Container style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 0 }}>
