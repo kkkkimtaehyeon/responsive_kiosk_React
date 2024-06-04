@@ -16,18 +16,18 @@ const WebSocketTest = () => {
 
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
-    const connect = () => {
-        wsRef.current = new WebSocket(`ws://${tempPort}/ws/v4/openai`);
-        wsRef.current.binaryType = 'arraybuffer';
-
-        wsRef.current.onopen = () => {
-            console.log('웹소켓 연결 성공!');
-            audioQueueRef.current = [];
-
-        };
-    }
-
     useEffect(() => {
+        const connect = () => {
+            wsRef.current = new WebSocket(`ws://${tempPort}/ws/v4/openai`);
+            wsRef.current.binaryType = 'arraybuffer';
+
+            wsRef.current.onopen = () => {
+                console.log('웹소켓 연결 성공!');
+                audioQueueRef.current = [];
+
+            };
+        }
+
         connect();
         audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -47,7 +47,7 @@ const WebSocketTest = () => {
                 isPlayingRef.current = false;
             }
         };
-    }, [connect]);
+    }, );
 
 
 
