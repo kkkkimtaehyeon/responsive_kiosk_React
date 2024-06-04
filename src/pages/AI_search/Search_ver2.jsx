@@ -12,7 +12,7 @@ const SearchV2 = ({ handleOpen }) => {
     const [isEmpty, setIsEmpty] = useState(true);
     const [menus, setMenus] = useState([]);
     const [visibilityToggle, setVisibilityToggle] = useState(true);
-    const tempPort = "localhost:8000";
+    const tempPort = process.env["FAST_API_PORT"];
 
     useEffect(() => {
         setIsEmpty(clickedIngredients.length === 0);

@@ -8,7 +8,7 @@ const WebcamCapture = () => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const navigate = useNavigate();
-    const tempPort = "localhost:8000";
+    const tempPort = process.env["FAST_API_PORT"];
 
     const navigateHandler = (option) => {
         if (option === "1" || option === "2") {
