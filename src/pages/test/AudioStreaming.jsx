@@ -4,7 +4,6 @@ import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognitio
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
 
-
 const WebSocketTest = () => {
     const wsRef = useRef(null);
     const audioContextRef = useRef(null);
@@ -24,32 +23,61 @@ const WebSocketTest = () => {
             wsRef.current.onopen = () => {
                 console.log('웹소켓 연결 성공!');
                 audioQueueRef.current = [];
-
             };
-        }
+
+            wsRef.current.onclose = () => {
+                console.log('웹소켓 연결 종료! 재연결 시도 중...');
+                setTimeout(connect, 1000); // 1초 후 재연결 시도
+            };
+
+            wsRef.current.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+
+            wsRef.current.onmessage = async (event) => {
+                if (event.data instanceof ArrayBuffer) {
+                    const arrayBuffer = event.data;
+                    try {
+                        const audioContext = audioContextRef.current;
+                        if (!audioContext) {
+                            console.error('Audio context is not initialized.');
+                            return;
+                        }
+                        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                        audioQueueRef.current.push(audioBuffer);
+
+                        if (!isPlayingRef.current) {
+                            playNextAudio();
+                        }
+                    } catch (error) {
+                        console.error('Error decoding audio data:', error);
+                    }
+                } else {
+                    try {
+                        const orderData = JSON.parse(event.data);
+                        console.log(`Received order${typeof orderData}:`, orderData);
+                        navigate("/payment", { state: { orderData: orderData } });
+                    } catch (e) {
+                        setGptScript(event.data);
+                    }
+                }
+            };
+        };
 
         connect();
         audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
 
-        wsRef.current.onclose = () => {
-            console.log('웹소켓 연결 종료!');
-        };
-
-        wsRef.current.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-
         return () => {
             if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
                 wsRef.current.close();
-                audioContextRef.current.close();
-                audioQueueRef.current = [];
-                isPlayingRef.current = false;
             }
+            if (audioContextRef.current) {
+                audioContextRef.current.close();
+            }
+            audioQueueRef.current = [];
+            isPlayingRef.current = false;
         };
-    }, );
-
-
+    }, [navigate, tempPort]);
 
     const startStreaming = () => {
         if (!transcript) {
@@ -59,35 +87,6 @@ const WebSocketTest = () => {
         wsRef.current.send(transcript);
         console.log(`${transcript}가 전달되었습니다.`);
         console.time("tts 전송 테스트");
-
-        wsRef.current.onmessage = async (event) => {
-            if (event.data instanceof ArrayBuffer) {
-                const arrayBuffer = event.data;
-                try {
-                    const audioContext = audioContextRef.current;
-                    if (!audioContext) {
-                        console.error('Audio context is not initialized.');
-                        return;
-                    }
-                    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-                    audioQueueRef.current.push(audioBuffer);
-
-                    if (!isPlayingRef.current) {
-                        playNextAudio();
-                    }
-                } catch (error) {
-                    console.error('Error decoding audio data:', error);
-                }
-            } else {
-                try {
-                    const orderData = JSON.parse(event.data);
-                    console.log(`Received order${typeof orderData}:`, orderData);
-                    navigate("/payment", { state: { orderData: orderData } });
-                } catch (e) {
-                    setGptScript(event.data);
-                }
-            }
-        };
     };
 
     const playNextAudio = () => {
@@ -120,7 +119,7 @@ const WebSocketTest = () => {
             SpeechRecognition.stopListening();
             startStreaming();
         } else {
-            if(isPlayingRef.current === true) {//스트리밍일 때만 가능
+            if (isPlayingRef.current === true) {
                 isPlayingRef.current = false;
                 audioQueueRef.current = [];
             }
