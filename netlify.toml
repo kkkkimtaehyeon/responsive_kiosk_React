@@ -1,3 +1,9 @@
 [build]
   command = "npm run build"
   publish = "build"
+
+[[redirects]]
+  from = "/proxy/*"
+  to = "https://responsivekiosk.store/:splat"
+  status = 200
+  force = true
