@@ -44,7 +44,7 @@ const SearchV2 = ({ handleOpen }) => {
     const goSearch = () => {
         if (!isEmpty) {
             const data = { ingredients: clickedIngredients };
-            axios.post(`//${tempPort}/fast/api/search`, data)
+            axios.post(`https://${tempPort}/fast/api/search`, data)
                 .then(response => {
                     console.log('recommendation menus are successfully arrived! : ', response.data);
                     visibilityHandler();

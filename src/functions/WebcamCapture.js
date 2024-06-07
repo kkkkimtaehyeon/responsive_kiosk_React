@@ -75,7 +75,7 @@ const WebcamCapture = () => {
         const fileName = `captured_face_${uuid()}.jpg`;
         formData.append('image_file', blob, fileName);
 
-        axios.post(`//${tempPort}/fast/api/face-recognition`, formData)
+        axios.post(`https://${tempPort}/fast/api/face-recognition`, formData)
             .then(response => {
                 navigateHandler(response.data.option);
             })
