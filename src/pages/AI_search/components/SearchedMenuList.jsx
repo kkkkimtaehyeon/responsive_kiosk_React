@@ -22,7 +22,7 @@ const SearchedMenuList = ({ menus, handleOpen }) => {
         } else {
             setDataList([]);
         }
-    }, [menus]);
+    }, [menus, tempPort]);
 
     const convertJsonArrayToObjectArray = (menuDetails) => {
         return menuDetails.map(item => ({
