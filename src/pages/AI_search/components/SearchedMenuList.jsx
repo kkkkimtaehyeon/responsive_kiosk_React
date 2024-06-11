@@ -7,10 +7,9 @@ const SearchedMenuList = ({ menus, handleOpen }) => {
     const tempPort = process.env.REACT_APP_SERVER_PORT;
 
     useEffect(() => {
-        if (menus && menus.menuList) {
+        if (menus && menus.length > 0) {
             const fetchData = async () => {
-                const menuList = menus.menuList;
-                const queryParams = menuList.map(menu => `id=${menu.id}`).join('&');
+                const queryParams = menus.map(menu => `id=${menu.id}`).join('&');
                 try {
                     const response = await axios.get(`https://${tempPort}/api/menus?${queryParams}`);
                     setDataList(convertJsonArrayToObjectArray(response.data));
@@ -23,6 +22,7 @@ const SearchedMenuList = ({ menus, handleOpen }) => {
             setDataList([]);
         }
     }, [menus, tempPort]);
+
 
     const convertJsonArrayToObjectArray = (menuDetails) => {
         return menuDetails.map(item => ({

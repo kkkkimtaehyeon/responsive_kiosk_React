@@ -22,7 +22,7 @@ const WebSocketTest = () => {
 
     useEffect(() => {
         const connect = () => {
-            wsRef.current = new WebSocket(`wss://${tempPort}/ws/v4/openai`);
+            wsRef.current = new WebSocket(`wss://${tempPort}/ws/v2/polly`);
             wsRef.current.binaryType = 'arraybuffer';
 
             wsRef.current.onopen = () => {
