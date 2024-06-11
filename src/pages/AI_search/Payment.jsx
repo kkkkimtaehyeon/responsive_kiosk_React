@@ -26,7 +26,7 @@ const Payment = () => {
     }, [navigate, tempPort]);
 
     useEffect(() => {
-        const orderData = JSON.parse(state.orderData);
+        const orderData = state.orderData;
         console.log(orderData);
         if(isPaid) {
             sendOrderToServer(orderData);
