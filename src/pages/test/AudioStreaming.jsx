@@ -12,7 +12,7 @@ const WebSocketTest = () => {
     const isPlayingRef = useRef(false);
     const [gptScript, setGptScript] = useState('');
     const navigate = useNavigate();
-    const tempPort = process.env.REACT_APP_FAST_API_PORT;
+    const tempPort = process.env.REACT_APP_SERVER_PORT;
 
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
 

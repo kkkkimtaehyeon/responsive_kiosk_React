@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import './Home.css'
-import { useNavigate } from "react-router-dom";
-import WebcamCapture from '../functions/WebcamCapture';
+import {useNavigate} from "react-router-dom";
 import Camera from "./Camera";
 
 

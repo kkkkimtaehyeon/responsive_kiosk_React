@@ -20,7 +20,6 @@ function App() {
             path: "main",
             element: <WebcamCapture />
         },
-
         {
             path: "ai-order",
             element: <AudioStreaming />,

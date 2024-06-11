@@ -8,7 +8,7 @@ const WebcamCapture = () => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const navigate = useNavigate();
-    const tempPort = process.env.REACT_APP_FAST_API_PORT;
+    const tempPort = process.env.REACT_APP_SERVER_PORT;
 
     const navigateHandler = (option) => {
         if (option === "1" || option === "2") {
