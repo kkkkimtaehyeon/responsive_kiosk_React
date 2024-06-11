@@ -22,7 +22,7 @@ const WebSocketTest = () => {
 
     useEffect(() => {
         const connect = () => {
-            wsRef.current = new WebSocket(`wss://${tempPort}/ws/v2/polly`);
+            wsRef.current = new WebSocket(`wss://${tempPort}/ws/v4/openai`);
             wsRef.current.binaryType = 'arraybuffer';
 
             wsRef.current.onopen = () => {
@@ -164,15 +164,16 @@ const WebSocketTest = () => {
                                 <p className="mb-1 text-muted">User</p>
                                 <p className="overflow-auto">{transcript}</p>
                             </div>
-                            <Button
-                                onClick={toggleListening}
-                                className={`w-100 ${listening ? 'btn-danger' : 'btn-secondary'}`}
-                                style={{ height: '80px' }}
-                            >
-                                {listening ? '음성인식 중지' : '음성인식 시작'}
-                            </Button>
+
                         </Card.Body>
                     </Card>
+                    <Button
+                        onClick={toggleListening}
+                        className={`w-100 ${listening ? 'btn-danger' : 'btn-secondary'}`}
+                        style={{ height: '80px' }}
+                    >
+                        {listening ? '음성인식 중지' : '음성인식 시작'}
+                    </Button>
                 </Col>
             </Row>
         </Container>
