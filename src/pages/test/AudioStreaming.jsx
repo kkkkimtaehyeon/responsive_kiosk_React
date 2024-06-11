@@ -165,9 +165,9 @@ const WebSocketTest = () => {
                                 <p className="overflow-auto">{transcript}</p>
                             </div>
                             <Button
-                                className={`ms-auto ${listening ? 'btn-danger' : 'btn-light'}`}
-                                style={{ height: '80px', flexShrink: 0 }}
                                 onClick={toggleListening}
+                                className={`w-100 ${listening ? 'btn-danger' : 'btn-secondary'}`}
+                                style={{ height: '80px' }}
                             >
                                 {listening ? '음성인식 중지' : '음성인식 시작'}
                             </Button>

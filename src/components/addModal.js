@@ -32,16 +32,6 @@ const AddModal = (props) => {
             centered
         >
             <Modal.Body>
-                <Card style={{ width: 100, marginBottom: 20 }}>
-                    <Card.Img variant="top" src={Pic} />
-                    <Card.Body>
-                        <Card.Title>{data.name}</Card.Title>
-                        <Card.Text>
-                            <span style={{ color: 'red' }}>{data.price}￦</span>
-                        </Card.Text>
-                    </Card.Body>
-                </Card>
-
                 <Card>
                     <Card.Body>
                         <Card.Title>음료의 온도</Card.Title>

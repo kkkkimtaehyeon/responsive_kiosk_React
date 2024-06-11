@@ -8,6 +8,7 @@ const SearchedMenuList = ({ menus, handleOpen }) => {
 
     useEffect(() => {
         if (menus && menus.length > 0) {
+            console.log('메뉴가 업데이트 되었습니다.');
             const fetchData = async () => {
                 const queryParams = menus.map(menu => `id=${menu.id}`).join('&');
                 try {

@@ -6,15 +6,15 @@ import axios from "axios";
 const Payment = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
-
     const [isPaid, setIsPaid] = useState(false);
+    const tempPort = process.env.REACT_APP_SERVER_PORT;
 
     const pay = () => {
         setIsPaid(true);
     }
 
     const sendOrderToServer = useCallback((data) => {
-        axios.post("http://localhost:8080/api/orders", data)
+        axios.post(`https://${tempPort}/api/orders`, data)
             .then(response => {
                 const orderId = response.data;
                 console.log("order success", orderId);
@@ -23,7 +23,7 @@ const Payment = () => {
             .catch(error => {
                 console.log("order failed", error);
             });
-    }, [navigate]);
+    }, [navigate, tempPort]);
 
     useEffect(() => {
         const orderData = JSON.parse(state.orderData);
