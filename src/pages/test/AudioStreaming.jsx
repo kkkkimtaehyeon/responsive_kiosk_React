@@ -83,7 +83,7 @@ const WebSocketTest = () => {
             } else {
                 try {
                     const orderData = JSON.parse(event.data);
-                    console.log(`Received order${typeof orderData}:`, orderData);
+                    console.log(`Received order(type:${typeof orderData}):`, orderData);
                     navigate("/payment", { state: { orderData: orderData } });
                 } catch (e) {
                     setGptScript(event.data);

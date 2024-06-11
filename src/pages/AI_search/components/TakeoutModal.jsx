@@ -13,10 +13,10 @@ const TakeoutModal = ({ show, onHide, onConfirm }) => {
                 <Modal.Title>주문 옵션 선택</Modal.Title>
             </Modal.Header>
             <Modal.Body className="d-flex justify-content-around">
-                <Button variant="primary" size="lg" onClick={() => handleOptionSelect('takeout')}>
+                <Button variant="primary" size="lg" onClick={() => handleOptionSelect('포장')}>
                     포장
                 </Button>
-                <Button variant="secondary" size="lg" onClick={() => handleOptionSelect('dinein')}>
+                <Button variant="secondary" size="lg" onClick={() => handleOptionSelect('매장')}>
                     매장
                 </Button>
             </Modal.Body>
