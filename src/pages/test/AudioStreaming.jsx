@@ -16,8 +16,6 @@ const WebSocketTest = () => {
 
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-
 
 
     useEffect(() => {
@@ -28,15 +26,17 @@ const WebSocketTest = () => {
             wsRef.current.onopen = () => {
                 console.log('웹소켓 연결 성공!');
                 audioQueueRef.current = [];
-
             };
         }
 
         connect();
+        
         audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
 
         wsRef.current.onclose = () => {
             console.log('웹소켓 연결 종료!');
+            connect();
+            console.log('웹소켓 재연결');
         };
 
         wsRef.current.onerror = (error) => {
