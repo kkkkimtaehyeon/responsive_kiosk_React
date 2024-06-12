@@ -113,8 +113,10 @@ const WebSocketTest = () => {
                 } else {
                     isPlayingRef.current = false;
                     console.log('All audio buffers played');
+                    console.log('audioQueue: ', audioQueueRef.current.length);
+                    console.log('listening: ', listening);
                     if(!listening && audioQueueRef.current.length === 0) {
-                        console.log('audioQueue: ', audioQueueRef.current.length, listening);
+
                         setTimeout(() => {
                             wsRef.current.send('[응답이 없으면 처음으로 돌아갑니다]라고 그대로 반환해줘 ');
                             setTimeout(() => navigate("/main"), 10000);
