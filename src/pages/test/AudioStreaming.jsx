@@ -22,7 +22,7 @@ const WebSocketTest = () => {
 
     useEffect(() => {
         const connect = () => {
-            wsRef.current = new WebSocket(`wss://${tempPort}/ws/v4/openai`);
+            wsRef.current = new WebSocket(`wss://${tempPort}/ws/v2/polly`);
             wsRef.current.binaryType = 'arraybuffer';
 
             wsRef.current.onopen = () => {
@@ -82,7 +82,7 @@ const WebSocketTest = () => {
                 }
             } else {
                 try {
-                    const orderData = JSON.parse(event.data);
+                    const orderData = event.data;
                     console.log(`Received order(type:${typeof orderData}):`, orderData);
                     navigate("/payment", { state: { orderData: orderData } });
                 } catch (e) {

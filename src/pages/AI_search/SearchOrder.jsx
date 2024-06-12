@@ -57,7 +57,7 @@ const SearchOrder = () => {
                 menuName: order.name,
                 amount: order.count,
                 price: order.count * order.price,
-                temperature: 'ice',
+                temperature: order.temperature,
             })),
         };
         console.log('Data received from modal: ', orderData);
