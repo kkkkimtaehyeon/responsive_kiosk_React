@@ -19,6 +19,7 @@ const WebSocketTest = () => {
 
 
 
+
     useEffect(() => {
         const connect = () => {
             wsRef.current = new WebSocket(`wss://${tempPort}/ws/v4/openai`);
@@ -26,9 +27,13 @@ const WebSocketTest = () => {
 
             wsRef.current.onopen = () => {
                 console.log('웹소켓 연결 성공!');
-                console.log(location);
                 audioQueueRef.current = [];
             };
+        }
+        const reconnect = () => {
+            if(location.pathname === '/ai-order'){
+                setTimeout(connect(), 1000);
+            }
         }
 
         connect();
@@ -37,8 +42,7 @@ const WebSocketTest = () => {
 
         wsRef.current.onclose = () => {
             console.log('웹소켓 연결 종료!');
-
-            setTimeout(connect(), 1000);
+            reconnect();
             console.log('웹소켓 재연결');
         };
 
@@ -109,10 +113,13 @@ const WebSocketTest = () => {
                 } else {
                     isPlayingRef.current = false;
                     console.log('All audio buffers played');
-                    setTimeout(() => {
-                        wsRef.current.send('[응답이 없으면 5초뒤에 처음으로 돌아갑니다]라고 그대로 반환해줘 ');
-                        setTimeout(() => navigate("/main"), 5000);
-                    }, 5000);
+                    if(!listening && audioQueueRef.current.length === 0) {
+                        setTimeout(() => {
+                            wsRef.current.send('[응답이 없으면 처음으로 돌아갑니다]라고 그대로 반환해줘 ');
+                            setTimeout(() => navigate("/main"), 10000);
+                        }, 5000);
+                    }
+
                 }
             };
         } else {
