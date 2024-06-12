@@ -7,16 +7,16 @@ import Card from 'react-bootstrap/Card';
 
 const AddModal = (props) => {
     const { show, data, onAdd, onHide } = props;
+    const [temperature, setTemperature] = useState('');
 
     const handleAdd = () => {
-        onAdd(data);
+        onAdd({ ...data, temperature }); // 온도 값을 함께 전달
         handleCancel();
     }
 
     const handleCancel = () => {
         onHide();
     }
-    const [temperature, setTemperature] = useState('');
 
     const handleTemperatureChange = (event) => {
         setTemperature(event.target.value);
