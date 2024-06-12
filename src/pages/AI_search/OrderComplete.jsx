@@ -7,10 +7,9 @@ const OrderComplete = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Uncomment the below code to enable navigation after 10 seconds
-        // setTimeout(() => {
-        //     navigate("/");
-        // }, 10000)
+         setTimeout(() => {
+             navigate("/");
+         }, 10000)
     }, [navigate]);
 
     return (
