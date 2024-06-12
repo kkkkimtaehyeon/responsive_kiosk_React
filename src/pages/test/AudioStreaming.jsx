@@ -55,12 +55,10 @@ const WebSocketTest = () => {
 
     const startStreaming = () => {
         if (!transcript) {
-            alert('Please enter some text to synthesize');
+            alert('음성으로 주문을 진행하세요.');
             return;
         }
         wsRef.current.send(transcript);
-        console.log(`${transcript}가 전달되었습니다.`);
-        console.time("tts 전송 테스트");
 
         wsRef.current.onmessage = async (event) => {
             if (event.data instanceof ArrayBuffer) {
@@ -110,6 +108,10 @@ const WebSocketTest = () => {
                     isPlayingRef.current = false;
                     console.log('All audio buffers played');
                     console.timeEnd("tts 전송 테스트");
+                    setTimeout(() => {
+                        wsRef.current.send('[응답이 없으면 5초뒤에 처음으로 돌아갑니다]라고 그대로 반환해줘 ');
+                        setTimeout(() => navigate("/"), 5000);
+                    }, 5000);
                 }
             };
         } else {
@@ -122,9 +124,12 @@ const WebSocketTest = () => {
         if (listening) {
             SpeechRecognition.stopListening();
             startStreaming();
+
+            console.log('음성인식 대기 중입니다.');
         } else {
             resetTranscript();
             SpeechRecognition.startListening({ language: 'ko-KR', continuous: true });
+            console.log(audioQueueRef)
         }
     };
 
