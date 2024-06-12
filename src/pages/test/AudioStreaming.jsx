@@ -20,7 +20,7 @@ const WebSocketTest = () => {
 
     useEffect(() => {
         const connect = () => {
-            wsRef.current = new WebSocket(`wss://${tempPort}/ws/v2/polly`);
+            wsRef.current = new WebSocket(`wss://${tempPort}/ws/v4/openai`);
             wsRef.current.binaryType = 'arraybuffer';
 
             wsRef.current.onopen = () => {
@@ -35,7 +35,7 @@ const WebSocketTest = () => {
 
         wsRef.current.onclose = () => {
             console.log('웹소켓 연결 종료!');
-            connect();
+            setTimeout(connect(), 1000);
             console.log('웹소켓 재연결');
         };
 
@@ -91,7 +91,7 @@ const WebSocketTest = () => {
         };
     };
 
-    const playNextAudio = () => {
+    const playNextAudio = async () => {
         if (audioQueueRef.current.length > 0) {
             isPlayingRef.current = true;
             const audioBuffer = audioQueueRef.current.shift();
@@ -100,6 +100,8 @@ const WebSocketTest = () => {
             source.connect(audioContextRef.current.destination);
             source.start();
             console.log('Playing audio buffer', audioBuffer);
+
+            // 현재 오디오 버퍼 재생이 끝나면 다음 오디오 버퍼 재생
             source.onended = () => {
                 console.log('Audio buffer ended', audioBuffer);
                 if (audioQueueRef.current.length > 0) {
@@ -121,11 +123,6 @@ const WebSocketTest = () => {
             SpeechRecognition.stopListening();
             startStreaming();
         } else {
-            if(isPlayingRef.current === true) {//스트리밍일 때만 가능
-                isPlayingRef.current = false;
-                audioQueueRef.current = [];
-            }
-
             resetTranscript();
             SpeechRecognition.startListening({ language: 'ko-KR', continuous: true });
         }
