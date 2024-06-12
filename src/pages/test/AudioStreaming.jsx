@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 const WebSocketTest = () => {
@@ -12,6 +12,7 @@ const WebSocketTest = () => {
     const isPlayingRef = useRef(false);
     const [gptScript, setGptScript] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
     const tempPort = process.env.REACT_APP_SERVER_PORT;
 
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
@@ -25,6 +26,7 @@ const WebSocketTest = () => {
 
             wsRef.current.onopen = () => {
                 console.log('웹소켓 연결 성공!');
+                console.log(location);
                 audioQueueRef.current = [];
             };
         }
@@ -35,6 +37,7 @@ const WebSocketTest = () => {
 
         wsRef.current.onclose = () => {
             console.log('웹소켓 연결 종료!');
+
             setTimeout(connect(), 1000);
             console.log('웹소켓 재연결');
         };
@@ -51,7 +54,7 @@ const WebSocketTest = () => {
                 isPlayingRef.current = false;
             }
         };
-    }, [tempPort]);
+    }, [tempPort, location]);
 
     const startStreaming = () => {
         if (!transcript) {
@@ -101,16 +104,14 @@ const WebSocketTest = () => {
 
             // 현재 오디오 버퍼 재생이 끝나면 다음 오디오 버퍼 재생
             source.onended = () => {
-                console.log('Audio buffer ended', audioBuffer);
                 if (audioQueueRef.current.length > 0) {
                     playNextAudio();
                 } else {
                     isPlayingRef.current = false;
                     console.log('All audio buffers played');
-                    console.timeEnd("tts 전송 테스트");
                     setTimeout(() => {
                         wsRef.current.send('[응답이 없으면 5초뒤에 처음으로 돌아갑니다]라고 그대로 반환해줘 ');
-                        setTimeout(() => navigate("/"), 5000);
+                        setTimeout(() => navigate("/main"), 5000);
                     }, 5000);
                 }
             };
