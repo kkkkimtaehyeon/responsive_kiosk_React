@@ -42,7 +42,7 @@ const Payment = () => {
         if(isPaid) {
             sendOrderToServer(jsonOrderData);
         }
-    }, [isPaid, state.orderData, sendOrderToServer]);
+    }, [isPaid, state.orderData, sendOrderToServer, jsonOrderData]);
 
     return (
         <Container>
