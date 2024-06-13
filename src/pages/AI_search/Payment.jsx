@@ -13,6 +13,20 @@ const Payment = () => {
         setIsPaid(true);
     }
 
+
+
+    const sendOrderToServer = useCallback((data) => {
+        axios.post(`https://${tempPort}/api/orders`, data)
+            .then(response => {
+                const orderId = response.data;
+                console.log("order success", orderId);
+                navigate("/order-complete", {state: orderId});
+            })
+            .catch(error => {
+                console.log("order failed", error);
+            });
+    }, [navigate, tempPort]);
+
     useEffect(() => {
         console.log('oderData is ', state.orderData);
         let orderData = '';
@@ -27,20 +41,6 @@ const Payment = () => {
             sendOrderToServer(orderData);
         }
     }, [isPaid, state.orderData, sendOrderToServer]);
-
-    const sendOrderToServer = useCallback((data) => {
-        axios.post(`https://${tempPort}/api/orders`, data)
-            .then(response => {
-                const orderId = response.data;
-                console.log("order success", orderId);
-                navigate("/order-complete", {state: orderId});
-            })
-            .catch(error => {
-                console.log("order failed", error);
-            });
-    }, [navigate, tempPort]);
-
-
 
     return (
         <Container>
