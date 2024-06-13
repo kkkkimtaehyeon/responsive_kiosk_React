@@ -1,5 +1,5 @@
-import {Button, Card, CardBody, Container, Row} from "react-bootstrap";
-import {useEffect, useState} from "react";
+import {Card, CardBody, Button, Container, Row} from "react-bootstrap";
+import {useEffect, useState, useCallback} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 
@@ -8,7 +8,6 @@ const Payment = () => {
     const { state } = useLocation();
     const [isPaid, setIsPaid] = useState(false);
     const tempPort = process.env.REACT_APP_SERVER_PORT;
-    const [orderData, setOrderData] = useState();
 
     const pay = () => {
         setIsPaid(true);
@@ -16,8 +15,7 @@ const Payment = () => {
 
 
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const sendOrderToServer = ((data) => {
+    const sendOrderToServer = useCallback((data) => {
         axios.post(`https://${tempPort}/api/orders`, data)
             .then(response => {
                 const orderId = response.data;
@@ -27,21 +25,22 @@ const Payment = () => {
             .catch(error => {
                 console.log("order failed", error);
             });
-    });
+    }, [navigate, tempPort]);
 
     useEffect(() => {
         console.log('oderData is ', state.orderData);
+        let orderData = '';
         if(typeof state.orderData === "string") {
-            setOrderData(JSON.parse(state.orderData));
+            orderData = JSON.parse(state.orderData);
         }else if(typeof state.orderData === "object") {
-            setOrderData(state.orderData);
+            orderData = state.orderData;
         }
 
         console.log(orderData);
         if(isPaid) {
             sendOrderToServer(orderData);
         }
-    }, [isPaid, state.orderData, sendOrderToServer, orderData]);
+    }, [isPaid, state.orderData, sendOrderToServer]);
 
     return (
         <Container>
