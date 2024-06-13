@@ -88,7 +88,7 @@ const WebSocketTest = () => {
             } else {
                 try {
                     const orderData = event.data;
-                    const jsonData = JSON.parse(orderData);
+                    JSON.parse(orderData);
                     navigate("/payment", { state: { orderData: orderData } });
                 } catch (e) {
                     setGptScript(event.data);
