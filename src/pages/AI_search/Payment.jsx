@@ -36,7 +36,7 @@ const Payment = () => {
             orderData = state.orderData;
         }
 
-        console.log(orderData);
+        console.log('received order data is ', orderData);
         if(isPaid) {
             sendOrderToServer(orderData);
         }
