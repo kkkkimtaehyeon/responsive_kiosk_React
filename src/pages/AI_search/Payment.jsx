@@ -13,6 +13,21 @@ const Payment = () => {
         setIsPaid(true);
     }
 
+    useEffect(() => {
+        console.log('oderData is ', state.orderData);
+        let orderData = '';
+        if(typeof state.orderData === "string") {
+            orderData = JSON.parse(state.orderData);
+        }else if(typeof state.orderData === "object") {
+            orderData = state.orderData;
+        }
+
+        console.log(orderData);
+        if(isPaid) {
+            sendOrderToServer(orderData);
+        }
+    }, [isPaid, state.orderData, sendOrderToServer]);
+
     const sendOrderToServer = useCallback((data) => {
         axios.post(`https://${tempPort}/api/orders`, data)
             .then(response => {
@@ -25,19 +40,7 @@ const Payment = () => {
             });
     }, [navigate, tempPort]);
 
-    useEffect(() => {
-        let orderData = '';
-        if(typeof state.orderData === "string") {
-            orderData = JSON.parse(state.orderData);
-        }else {
-            orderData = state.orderData;
-        }
 
-        console.log(orderData);
-        if(isPaid) {
-            sendOrderToServer(orderData);
-        }
-    }, [isPaid, state.orderData, sendOrderToServer]);
 
     return (
         <Container>

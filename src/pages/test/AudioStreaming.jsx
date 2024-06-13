@@ -13,7 +13,8 @@ const WebSocketTest = () => {
     const [gptScript, setGptScript] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
-    const tempPort = process.env.REACT_APP_SERVER_PORT;
+    //const tempPort = process.env.REACT_APP_SERVER_PORT;
+    const tempPort = "localhost:8000";
 
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
@@ -22,7 +23,7 @@ const WebSocketTest = () => {
 
     useEffect(() => {
         const connect = () => {
-            wsRef.current = new WebSocket(`wss://${tempPort}/ws/v2/polly`);
+            wsRef.current = new WebSocket(`ws://${tempPort}/ws/v2/polly`);
             wsRef.current.binaryType = 'arraybuffer';
 
             wsRef.current.onopen = () => {
@@ -88,8 +89,9 @@ const WebSocketTest = () => {
             } else {
                 try {
                     const orderData = event.data;
-                    JSON.parse(orderData);
-                    navigate("/payment", { state: { orderData: orderData } });
+                    console.log('orderdata is ', orderData);
+
+                    navigate("/payment", { state: { orderData: JSON.parse(orderData) } });
                 } catch (e) {
                     setGptScript(event.data);
                 }
