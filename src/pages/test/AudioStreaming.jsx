@@ -88,10 +88,10 @@ const WebSocketTest = () => {
                 }
             } else {
                 try {
-                    const orderData = event.data;
+                    const orderData = JSON.parse(event.data);
                     console.log('orderdata is ', orderData);
 
-                    navigate("/payment", { state: { orderData: JSON.parse(orderData) } });
+                    navigate("/payment", { state: { orderData: orderData} });
                 } catch (e) {
                     setGptScript(event.data);
                 }
