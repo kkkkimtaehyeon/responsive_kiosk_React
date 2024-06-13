@@ -8,7 +8,6 @@ const Payment = () => {
     const { state } = useLocation();
     const [isPaid, setIsPaid] = useState(false);
     const tempPort = process.env.REACT_APP_SERVER_PORT;
-    const [jsonOrderData, setJsonOrderData] = useState({});
 
     const pay = () => {
         setIsPaid(true);
@@ -38,11 +37,10 @@ const Payment = () => {
         }
 
         console.log('received order data is ', orderData);
-        setJsonOrderData(orderData)
         if(isPaid) {
-            sendOrderToServer(jsonOrderData);
+            sendOrderToServer(orderData);
         }
-    }, [isPaid, state.orderData, sendOrderToServer, jsonOrderData]);
+    }, [isPaid, state.orderData, sendOrderToServer]);
 
     return (
         <Container>
